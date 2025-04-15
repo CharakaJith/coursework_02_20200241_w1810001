@@ -1,3 +1,4 @@
+const logger = require('../../middleware/log/logger');
 const fieldValidator = require('../../util/fieldValidator');
 
 const userService = {
