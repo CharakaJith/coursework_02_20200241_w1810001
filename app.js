@@ -4,6 +4,9 @@ const initialize = require('./database/initialze');
 const swagger = require('swagger-ui-express');
 require('dotenv').config();
 
+const routesV1 = require('./routes/v1/index');
+const routesV2 = require('./routes/v2/index');
+
 // initialize the express app
 const app = express();
 app.use(
@@ -23,7 +26,9 @@ initialization();
 
 // TODO: swagger doc
 
-// TODO: setup routing paths
+// setup routing paths
+app.use('/api/v1', routesV1);
+app.use('/api/v2', routesV2);
 
 // TODO: global custom error handler
 
