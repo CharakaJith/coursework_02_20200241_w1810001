@@ -1,0 +1,539 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "TravelTales API Document",
+    "description": "Swagger document for TravelTales API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:8000",
+  "basePath": "/api/v1",
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your JWT token in double quotes, e.g. \"your.token.here\""
+    }
+  },
+  "tags": [
+    {
+      "name": "User",
+      "description": "Endpoints related to the user"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/user/": {
+      "post": {
+        "tags": ["User"],
+        "description": "Registers a new user by creating an account with the provided credentials.",
+        "parameters": [
+          {
+            "name": "user/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserSignUp"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "User successfully registered.",
+            "schema": {
+              "$ref": "#/definitions/UserSignUpSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "User failed to provide required details.",
+            "schema": {
+              "$ref": "#/definitions/UserSignUpBadResponse"
+            }
+          },
+          "409": {
+            "description": "User already registered in the system.",
+            "schema": {
+              "$ref": "#/definitions/UserSignUpConflictResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": ["User"],
+        "description": "Generate access-token and refresh-token based on user login.",
+        "parameters": [
+          {
+            "name": "user/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User successfully logged in.",
+            "headers": {
+              "Access-Token": {
+                "type": "string",
+                "description": "Access-token generated on user login.",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblVzZXIiOnsiaWQiOjEsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6IkRvZSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImlzQWN0aXZlIjp0cnVlfSwiaWF0IjoxNzQwODA3NjkzLCJleHAiOjE3NDA4MTg0OTN9.U2JTzgAcNb3PnlgYzQBNbgkNBfuANpezpuE8TpZsgHc"
+              },
+              "Set-Cookie": {
+                "type": "string",
+                "description": "Refresh token stored in an HTTP-only cookie",
+                "example": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblVzZXIiOnsiaWQiOjEsImZpcnN0TmFtZSI6IkpvaG4iLCJsYXN0TmFtZSI6IkRvZSIsImVtYWlsIjoiam9obkBleGFtcGxlLmNvbSIsImlzQWN0aXZlIjp0cnVlfSwiaWF0IjoxNzQwODA3NjkzLCJleHAiOjE3NDE0MTI0OTN9.wDhujt4pxgMQ3iLVmqQb2Be8COqXxoIFU4TTn7V0jzo; Path=/; HttpOnly; Secure; SameSite=Strict"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UserSignUpSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "User failed to provide required details.",
+            "schema": {
+              "$ref": "#/definitions/UserLoginBadResponse"
+            }
+          },
+          "401": {
+            "description": "User provided invalid details.",
+            "schema": {
+              "$ref": "#/definitions/UserLoginUnauthorizedResponse"
+            }
+          },
+          "403": {
+            "description": "User is not active.",
+            "schema": {
+              "$ref": "#/definitions/UserLoginForbiddondResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserSignUp": {
+      "type": "object",
+      "required": ["firstName", "lastName", "email", "password"],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "example": "John",
+          "description": "First name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Doe",
+          "description": "Last name of the user."
+        },
+        "phone": {
+          "type": "string",
+          "example": "+94701234567",
+          "description": "Mobile number of the user."
+        },
+        "email": {
+          "type": "string",
+          "example": "john@example.com",
+          "description": "Unique email of the user."
+        },
+        "password": {
+          "type": "string",
+          "example": "randomPwd123",
+          "description": "Secure password of the user."
+        }
+      }
+    },
+    "UserSignUpSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "201"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "isActive": {
+                      "type": "boolean",
+                      "example": "true"
+                    },
+                    "id": {
+                      "type": "number",
+                      "example": "1"
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "john@example.com"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-01T03:21:47.716Z"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-01T03:21:47.716Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserSignUpBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string",
+                    "example": "firstName"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Field 'firstName' is empty!"
+                  }
+                },
+                "example": [
+                  {
+                    "fields": "firstName",
+                    "message": "Field 'firstName' is empty!"
+                  },
+                  {
+                    "fields": "lastName",
+                    "message": "Field 'lastName' is empty!"
+                  },
+                  {
+                    "fields": "email",
+                    "message": "Field 'email' is empty!"
+                  },
+                  {
+                    "fields": "email",
+                    "message": "Invalid 'email' format!"
+                  },
+                  {
+                    "fields": "password",
+                    "message": "Field 'password' is empty!"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserSignUpConflictResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "409"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User already registered!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserLogin": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "john@example.com",
+          "description": "Unique email of the user."
+        },
+        "password": {
+          "type": "string",
+          "example": "randomPwd123",
+          "description": "Secure password of the user."
+        }
+      }
+    },
+    "UserLoginSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "isActive": {
+                      "type": "boolean",
+                      "example": "true"
+                    },
+                    "id": {
+                      "type": "number",
+                      "example": "1"
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "john@example.com"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-01T03:21:47.716Z"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-01T03:21:47.716Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserLoginBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  {
+                    "fields": "email",
+                    "message": "The 'email' field is required."
+                  },
+                  {
+                    "fields": "email",
+                    "message": "Invalid format for 'email'."
+                  },
+                  {
+                    "fields": "password",
+                    "message": "The 'password' field is required."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserLoginUnauthorizedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "401"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid user credentials."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserLoginForbiddondResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User account is inactive."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "ServerErrorResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "500"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Server error message!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "AuthFailedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "401"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Authentication failed."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
