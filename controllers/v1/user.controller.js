@@ -53,6 +53,64 @@ const userController = {
       next(error);
     }
   },
+
+  update: async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { firstName, lastName, phone } = req.body;
+      const userData = {
+        id,
+        firstName,
+        lastName,
+        phone,
+      };
+
+      const response = await userService.updateUserDetails(userData);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  updatePassword: async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { oldPassword, newPassword } = req.body;
+      const userData = {
+        id,
+        oldPassword,
+        newPassword,
+      };
+
+      const response = await userService.updateUserPassword(userData);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  deactivate: async (req, res, next) => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = userController;

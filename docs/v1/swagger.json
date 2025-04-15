@@ -69,6 +69,63 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Updates existing user details.",
+        "parameters": [
+          {
+            "name": "user/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User details updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserUpdateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "User failed to provide required details.",
+            "schema": {
+              "$ref": "#/definitions/UserUpdateBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "403": {
+            "description": "User is not active.",
+            "schema": {
+              "$ref": "#/definitions/UserUpdateForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "User record is not available in the database.",
+            "schema": {
+              "$ref": "#/definitions/UserUpdateNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
       }
     },
     "/user/login": {
@@ -130,12 +187,78 @@
           }
         }
       }
+    },
+    "/user/password": {
+      "put": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Updates existing user's password.",
+        "parameters": [
+          {
+            "name": "user/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserPassword"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User password updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserPasswordSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "User failed to provide required details.",
+            "schema": {
+              "$ref": "#/definitions/UserPasswordBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed or user's old password is incorrect.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/AuthFailedResponse"
+                },
+                {
+                  "$ref": "#/definitions/UserPasswordUnauthResponse"
+                }
+              ]
+            }
+          },
+          "403": {
+            "description": "User is not active.",
+            "schema": {
+              "$ref": "#/definitions/UserPasswordForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "User record is not available in the database.",
+            "schema": {
+              "$ref": "#/definitions/UserPasswordNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
     "UserSignUp": {
       "type": "object",
-      "required": ["firstName", "lastName", "email", "password"],
+      "required": ["firstName", "lastName", "phone", "email", "password"],
       "properties": {
         "firstName": {
           "type": "string",
@@ -199,6 +322,10 @@
                     "lastName": {
                       "type": "string",
                       "example": "Doe"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+94701234567"
                     },
                     "email": {
                       "type": "string",
@@ -298,6 +425,190 @@
                 "message": {
                   "type": "string",
                   "example": "User already registered!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserUpdate": {
+      "type": "object",
+      "required": ["firstName", "lastName"],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "example": "Johnathan",
+          "description": "First name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Doe",
+          "description": "Last name of the user."
+        },
+        "phone": {
+          "type": "string",
+          "example": "+94701234567",
+          "description": "Mobile number of the user."
+        }
+      }
+    },
+    "UserUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "isActive": {
+                      "type": "boolean",
+                      "example": "true"
+                    },
+                    "id": {
+                      "type": "number",
+                      "example": "1"
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+94701234567"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "john@example.com"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-01T03:21:47.716Z"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-03-01T03:21:47.716Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserUpdateBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  {
+                    "fields": "firstName",
+                    "message": "The 'firstName' field is required."
+                  },
+                  {
+                    "fields": "lastName",
+                    "message": "The 'lastName' field is required."
+                  },
+                  {
+                    "fields": "phone",
+                    "message": "The 'phone' field is required."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserUpdateForbiddonResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User account is inactive."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserUpdateNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found."
                 }
               }
             }
@@ -473,6 +784,173 @@
                 "message": {
                   "type": "string",
                   "example": "User account is inactive."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserPassword": {
+      "type": "object",
+      "required": ["oldPassword", "newPassword"],
+      "properties": {
+        "oldPassword": {
+          "type": "string",
+          "example": "randomPwd123",
+          "description": "Current password of the user."
+        },
+        "newPassword": {
+          "type": "string",
+          "example": "updatedPwd098",
+          "description": "New password of the user."
+        }
+      }
+    },
+    "UserPasswordSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Password updated successfully."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserPasswordBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  {
+                    "fields": "oldPassword",
+                    "message": "The 'oldPassword' field is required."
+                  },
+                  {
+                    "fields": "newPassword",
+                    "message": "The 'newPassword' field is required."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserPasswordForbiddonResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User account is inactive."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserPasswordNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserPasswordUnauthResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "401"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Current password is incorrect."
                 }
               }
             }
