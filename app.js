@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const initialize = require('./database/initialze');
 const swagger = require('swagger-ui-express');
 require('dotenv').config();
 
@@ -14,7 +15,11 @@ app.use(
 );
 app.use(express.json());
 
-// TODO: initialize database
+// initialize database
+const initialization = async () => {
+  await initialize();
+};
+initialization();
 
 // TODO: swagger doc
 
