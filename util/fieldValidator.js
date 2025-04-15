@@ -26,7 +26,7 @@ const fieldValidator = {
   validate_email: async (email) => {
     const emailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    const isValidString = await field_validator.validate_string(email, 'email');
+    const isValidString = await fieldValidator.validate_string(email, 'email');
     if (isValidString != 1) {
       return isValidString;
     }
@@ -44,7 +44,7 @@ const fieldValidator = {
   validate_phone: async (phone) => {
     const phoneFormat = /^\+94\d{9}$/;
 
-    const isValidString = await field_validator.validate_string(phone, 'phone');
+    const isValidString = await fieldValidator.validate_string(phone, 'phone');
     if (isValidString != 1) {
       return isValidString;
     }

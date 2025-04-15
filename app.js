@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const initialize = require('./database/initialze');
+const errorHandler = require('./middleware/errorHandler');
 const swagger = require('swagger-ui-express');
 require('dotenv').config();
 
@@ -30,7 +31,8 @@ initialization();
 app.use('/api/v1', routesV1);
 app.use('/api/v2', routesV2);
 
-// TODO: global custom error handler
+// global custom error handler
+app.use(errorHandler);
 
 // start the server
 const ENV = process.env.ENV || 'development';
