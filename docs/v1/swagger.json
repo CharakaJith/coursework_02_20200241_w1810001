@@ -126,6 +126,48 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Deactivate user profile.",
+        "produces": ["application/json"],
+        "responses": {
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "403": {
+            "description": "User is not active.",
+            "schema": {
+              "$ref": "#/definitions/UserDeleteForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "User record is not available in the database.",
+            "schema": {
+              "$ref": "#/definitions/UserDeleteNotFoundResponse"
+            }
+          },
+          "410": {
+            "description": "User profile deactivated successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserDeleteSuccessResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
       }
     },
     "/user/login": {
@@ -951,6 +993,88 @@
                 "message": {
                   "type": "string",
                   "example": "Current password is incorrect."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "410"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User profile has been permanently deleted."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserDeleteNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserDeleteForbiddonResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User account is inactive."
                 }
               }
             }

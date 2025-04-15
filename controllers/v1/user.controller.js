@@ -107,6 +107,18 @@ const userController = {
 
   deactivate: async (req, res, next) => {
     try {
+      const userId = req.user.id;
+
+      const response = await userService.deactivateUser(userId);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
     } catch (error) {
       next(error);
     }

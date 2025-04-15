@@ -242,6 +242,39 @@ const userService = {
       },
     };
   },
+
+  deactivateUser: async (userId) => {
+    // get and validate user
+    const user = await userDao.getById(userId);
+    if (!user) {
+      throw new CustomError(RESPONSE.USER.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+    if (user.id !== userId) {
+      throw new CustomError(JWT.AUTH.FORBIDDEN, STATUS_CODE.FORBIDDON);
+    }
+    if (!user.isActive) {
+      throw new CustomError(RESPONSE.USER.INACTIVE, STATUS_CODE.FORBIDDON);
+    }
+
+    // deactivate user
+    const userData = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      password: user.password,
+      isActive: false,
+    };
+    await userDao.update(userData);
+
+    return {
+      success: true,
+      status: STATUS_CODE.GONE,
+      data: {
+        message: RESPONSE.USER.DEACTIVATED,
+      },
+    };
+  },
 };
 
 module.exports = userService;
