@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    image: travel_tales
+    ports:
+      - '8000:8000'
+      - '3000:3000'
+    env_file:
+      - .env
+      - client/.env
+    environment:
+      - NODE_ENV=development
+    command: bash -c "npx sequelize-cli db:migrate && npm start"
