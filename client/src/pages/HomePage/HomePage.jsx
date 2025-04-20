@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import map from '../../assets/animations/map.gif';
 import SignUpForm from '@/components/sign-up/signup-form';
+import LoginForm from '@/components/log-in/login-form';
 
 function HomePage() {
+  const [showLogin, setShowLogin] = useState(false);
+
   return (
     <div className="grid min-h-screen lg:grid-cols-2 bg-gradient-to-r from-blue-950 via-blue-500 to-white">
       {/* left hand side */}
@@ -17,7 +21,7 @@ function HomePage() {
       {/* right hand side */}
       <div className="flex flex-1 items-center justify-center p-6 md:p-10">
         <div className="w-full max-w-md text-center">
-          <SignUpForm />
+          {showLogin ? <LoginForm goToSignup={() => setShowLogin(false)} /> : <SignUpForm goToLogin={() => setShowLogin(true)} />}
         </div>
       </div>
     </div>

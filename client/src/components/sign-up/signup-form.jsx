@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
 import { VALIDATE, USER } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -10,7 +10,7 @@ const api = axios.create({
   baseURL: apiUrl,
 });
 
-function SignUpForm() {
+function SignUpForm({ goToLogin }) {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [phone, setPhone] = useState('');
@@ -66,13 +66,8 @@ function SignUpForm() {
     const newPassword = e.target.value;
     setPassword(newPassword);
 
-    // check if confirmPassword is already filled
-    if (confirmPassword && newPassword !== confirmPassword) {
-      setIsError(true);
-      setError(VALIDATE.PASSWORD_MISMATCH);
-    } else {
+    if (newPassword.trim().length > 0) {
       setIsError(false);
-      setError('');
     }
   };
 
@@ -81,13 +76,8 @@ function SignUpForm() {
     const newConfirmPassword = e.target.value;
     setConfirmPassword(newConfirmPassword);
 
-    // check if passwords match
-    if (newConfirmPassword !== password) {
-      setIsError(true);
-      setError(VALIDATE.PASSWORD_MISMATCH);
-    } else {
+    if (newConfirmPassword.trim().length > 0) {
       setIsError(false);
-      setError('');
     }
   };
 
@@ -108,7 +98,7 @@ function SignUpForm() {
       !confirmPassword ||
       confirmPassword.trim().length === 0
     ) {
-      setError(VALIDATE.EMPTY_FIELDS);
+      setError([VALIDATE.EMPTY_FIELDS]);
       setIsError(true);
     } else {
       // request body
@@ -124,9 +114,7 @@ function SignUpForm() {
         .post('/api/v1/user', userData, {})
         .then((res) => {
           if (res.data.success === true) {
-            sessionStorage.setItem('signupMessage', USER.SIGNED_UP);
-
-            // TODO: navigate to login
+            goToLogin?.(); // open login form
           }
         })
         .catch((error) => {
@@ -148,8 +136,19 @@ function SignUpForm() {
 
   // handle go to login
   const handleGoToLogin = () => {
-    // TODO: navigate to login
+    goToLogin?.(); // open login form
   };
+
+  // check password and confrim password on change
+  useEffect(() => {
+    if (confirmPassword && password && confirmPassword !== password) {
+      setIsError(true);
+      setError([VALIDATE.PASSWORD_MISMATCH]);
+    } else if (isError && error[0] === VALIDATE.PASSWORD_MISMATCH) {
+      setIsError(false);
+      setError([]);
+    }
+  }, [password, confirmPassword]);
 
   return (
     <div className="w-full max-w-lg p-8 rounded-4xl shadow-lg bg-blue-950 text-white">
@@ -223,12 +222,12 @@ function SignUpForm() {
         {isError &&
           Array.isArray(error) &&
           error.map((msg, index) => (
-            <div key={index} className="mb-2 w-full py-3 bg-red-500 text-white px-4 rounded-md text-sm">
+            <div key={index} className="my-3 w-full py-3 bg-red-500 text-white px-4 rounded-md text-sm">
               {msg}
             </div>
           ))}
 
-        {/* signup button */}
+        {/* sign up button */}
         <Button
           type="submit"
           className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
@@ -237,9 +236,9 @@ function SignUpForm() {
         </Button>
       </form>
 
-      {/* login  */}
+      {/* log in  */}
       <p className="mt-4 text-center text-sm text-shadow-indigo-50">
-        Already have an account?{' '}
+        Already have an account?{'  '}
         <span className="text-blue-300 hover:text-blue-500 cursor-pointer" onClick={handleGoToLogin}>
           Log In
         </span>
