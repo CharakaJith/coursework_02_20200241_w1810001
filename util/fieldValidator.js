@@ -16,7 +16,7 @@ const fieldValidator = {
     if (isNaN(value) || isNaN(parseFloat(value))) {
       return {
         fields: param,
-        message: VALIDATE.PARAM.INVALID(param),
+        message: VALIDATE.PARAM.EMPTY(param),
       };
     }
 
@@ -53,6 +53,24 @@ const fieldValidator = {
       return {
         fields: 'phone',
         message: VALIDATE.PARAM.INVALID('phone'),
+      };
+    }
+
+    return 1;
+  },
+
+  validate_date: async (date, param) => {
+    const dateFormat = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+
+    const isValidString = await fieldValidator.validate_string(date, param);
+    if (isValidString != 1) {
+      return isValidString;
+    }
+
+    if (!date.match(dateFormat)) {
+      return {
+        fields: param,
+        message: VALIDATE.PARAM.INVALID(param),
       };
     }
 

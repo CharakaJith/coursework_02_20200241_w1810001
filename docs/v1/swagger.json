@@ -23,6 +23,10 @@
     {
       "name": "User",
       "description": "Endpoints related to the user"
+    },
+    {
+      "name": "Post",
+      "description": "Endpoints related to the blog-post"
     }
   ],
   "schemes": ["http"],
@@ -176,7 +180,7 @@
         "description": "Generate access-token and refresh-token based on user login.",
         "parameters": [
           {
-            "name": "user/",
+            "name": "user/login",
             "in": "body",
             "schema": {
               "$ref": "#/definitions/UserLogin"
@@ -241,7 +245,7 @@
         "description": "Updates existing user's password.",
         "parameters": [
           {
-            "name": "user/",
+            "name": "user/password",
             "in": "body",
             "schema": {
               "$ref": "#/definitions/UserPassword"
@@ -291,6 +295,54 @@
             "description": "Unexpected server error occurred in the system.",
             "schema": {
               "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/post/": {
+      "post": {
+        "tags": ["Post"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Create a new blog-post with provided details.",
+        "parameters": [
+          {
+            "name": "post/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/PostCreate"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "201": {
+            "description": "New post created successfully.",
+            "schema": {
+              "$ref": "#/definitions/PostCreateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Required details are not provided.",
+            "schema": {
+              "$ref": "#/definitions/PostCreateBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed or user's old password is incorrect.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "404": {
+            "description": "Invalid country ID.",
+            "schema": {
+              "$ref": "#/definitions/PostCreateNotFoundResponse"
             }
           }
         }
@@ -1075,6 +1127,166 @@
                 "message": {
                   "type": "string",
                   "example": "User account is inactive."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "PostCreate": {
+      "type": "object",
+      "required": ["title", "content", "countryId", "visitDate"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "First day at France",
+          "description": "Title of the blog-post."
+        },
+        "content": {
+          "type": "string",
+          "example": "Touching down in France felt like stepping into a dream. From the aroma of fresh croissants in the morning air to the charm of cobblestone streets and cozy cafés, everything was surreal. Navigating a new language and culture was both exciting and humbling — but every smile, every “bonjour,” made the journey feel warm and welcoming.",
+          "description": "Content of the blog-post."
+        },
+        "countryId": {
+          "type": "number",
+          "example": 23,
+          "description": "Country abount the blog-post being made."
+        },
+        "visitDate": {
+          "type": "string",
+          "example": "31/03/2025",
+          "description": "Date of the visit."
+        }
+      }
+    },
+    "PostCreateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "201"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "post": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "First day at France"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "Touching down in France felt like stepping into a dream. From the aroma of fresh croissants in the morning air to the charm of cobblestone streets and cozy cafés, everything was surreal. Navigating a new language and culture was both exciting and humbling — but every smile, every “bonjour,” made the journey feel warm and welcoming."
+                    },
+                    "countryId": {
+                      "type": "number",
+                      "example": 23
+                    },
+                    "visitDate": {
+                      "type": "string",
+                      "example": "2025-03-31T00:00:00.000Z"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-04-20T17:55:59.105Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2025-04-20T17:55:59.105Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostCreateBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  {
+                    "fields": "title",
+                    "message": "The 'title' field is required."
+                  },
+                  {
+                    "fields": "content",
+                    "message": "The 'content' field is required."
+                  },
+                  {
+                    "fields": "countryId",
+                    "message": "The 'countryId' field is required."
+                  },
+                  {
+                    "fields": "visitDate",
+                    "message": "The 'visitDate' field is required."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostCreateNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "The country does not exist."
                 }
               }
             }

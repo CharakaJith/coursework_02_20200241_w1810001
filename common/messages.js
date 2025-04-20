@@ -18,6 +18,9 @@ module.exports = {
       DEACTIVATED: 'User profile has been permanently deleted.',
       PWD_UPDATED: 'Password updated successfully.',
     },
+    COUNTRY: {
+      INVALID: 'The country does not exist.',
+    },
   },
 
   // validation error messages
