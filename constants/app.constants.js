@@ -22,4 +22,10 @@ module.exports = {
     BAD_GATEWAY: 502,
     TIME_OUT: 504,
   }),
+
+  CONNECTION: Object.freeze({
+    ABORT: 'ECONNABORTED',
+    NOTFOUND: 'ENOTFOUND',
+    REFUSED: 'ECONNREFUSED',
+  }),
 };

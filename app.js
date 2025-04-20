@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const initialize = require('./database/initialze');
+const restCountriesService = require('./services/restCountries.service');
 const errorHandler = require('./middleware/errorHandler');
 const swagger = require('swagger-ui-express');
 const swaggerDocV1 = require('./docs/v1/swagger.json');
@@ -25,6 +26,12 @@ const initialization = async () => {
   await initialize();
 };
 initialization();
+
+// update country database
+const updateCountries = async () => {
+  await restCountriesService.updateDatabase();
+};
+updateCountries();
 
 // swagger doc
 app.use('/api-docs', swagger.serve, swagger.setup(swaggerDocV1));

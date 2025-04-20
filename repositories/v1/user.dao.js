@@ -2,7 +2,7 @@ const models = require('../../models');
 const CustomError = require('../../util/customError');
 const { DAO } = require('../../common/messages');
 const { STATUS_CODE } = require('../../constants/app.constants');
-const { ENTITY } = require('../../constants/entity.constant');
+const { ENTITY } = require('../../constants/entity.constants');
 
 const userDao = {
   insert: async (user) => {
