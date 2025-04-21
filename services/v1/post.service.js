@@ -57,7 +57,9 @@ const postService = {
     };
   },
 
-  getAllPosts: async (postType) => {
+  getAllPosts: async (data) => {
+    const { userId, postType } = data;
+
     // validate post type
     const isValidType = Object.values(POST_TYPE).includes(postType);
     if (!isValidType) {

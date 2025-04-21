@@ -24,9 +24,14 @@ const postController = {
 
   getAll: async (req, res, next) => {
     try {
+      const userId = req.user.id;
       const type = req.params.type;
+      const postData = {
+        userId: userId,
+        postType: type,
+      };
 
-      const response = await postService.getAllPosts(type);
+      const response = await postService.getAllPosts(postData);
       const { success, status, data } = response;
 
       res.status(status).json({

@@ -14,26 +14,24 @@ const restCountriesService = {
 
       // extract country details
       let newCountries = [];
-      if (restCountries?.data.length > 0) {
-        newCountries = restCountries.map((country) => {
-          // extract currency data
-          const currencyKey = country.currencies ? Object.keys(country.currencies)[0] : null;
-          const currencyData = currencyKey ? country.currencies[currencyKey] : null;
+      newCountries = restCountries.map((country) => {
+        // extract currency data
+        const currencyKey = country.currencies ? Object.keys(country.currencies)[0] : null;
+        const currencyData = currencyKey ? country.currencies[currencyKey] : null;
 
-          return {
-            officialName: country.name ? country.name.official : null,
-            commonName: country.name ? country.name.common : null,
-            capital: country.capital ? country.capital[0] : null,
-            currency: {
-              name: currencyData ? currencyData.name : null,
-              code: currencyKey,
-              symbol: currencyData ? currencyData.symbol : null,
-            },
-            languages: country.languages ? country.languages : null,
-            flagUrl: country.flags ? country.flags.svg : null,
-          };
-        });
-      }
+        return {
+          officialName: country.name ? country.name.official : null,
+          commonName: country.name ? country.name.common : null,
+          capital: country.capital ? country.capital[0] : null,
+          currency: {
+            name: currencyData ? currencyData.name : null,
+            code: currencyKey,
+            symbol: currencyData ? currencyData.symbol : null,
+          },
+          languages: country.languages ? country.languages : null,
+          flagUrl: country.flags ? country.flags.svg : null,
+        };
+      });
 
       if (newCountries.length > existingCountries.length) {
         // get countries to save
