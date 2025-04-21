@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { VALIDATE, USER } from '../../common/messages';
@@ -16,6 +17,8 @@ function LoginForm({ goToSignup }) {
 
   const [error, setError] = useState('');
   const [isError, setIsError] = useState(false);
+
+  const navigate = useNavigate();
 
   // handle email on change
   const handleEmailChange = (e) => {
@@ -56,9 +59,14 @@ function LoginForm({ goToSignup }) {
         .post('/api/v1/user/login', userData, {})
         .then((res) => {
           if (res.data.success === true) {
-            console.log('user signed up.....');
+            // set access token
+            const accessToken = res.headers['Access-Token'] || res.headers['access-token'];
+            if (accessToken) {
+              sessionStorage.setItem('accessToken', accessToken);
+              sessionStorage.setItem('user', JSON.stringify(res.data.response.data.user));
+            }
 
-            // TODO: go to dashboard
+            navigate('/home');
           }
         })
         .catch((error) => {
