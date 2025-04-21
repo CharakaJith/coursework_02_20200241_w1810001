@@ -21,6 +21,44 @@ const postController = {
       next(error);
     }
   },
+
+  getAll: async (req, res, next) => {
+    try {
+      const type = req.params.type;
+
+      const response = await postService.getAllPosts(type);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getById: async (req, res, next) => {
+    try {
+      const postId = req.params.id;
+
+      const response = await postService.getPostById(postId);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = postController;

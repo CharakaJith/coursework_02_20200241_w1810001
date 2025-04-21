@@ -12,6 +12,52 @@ const postDao = {
       throw new CustomError(DAO.FAILED.INSERT(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
     }
   },
+
+  getAll: async () => {
+    try {
+      return await models.Post.findAll({
+        include: [
+          {
+            model: models.Country,
+            include: [
+              {
+                model: models.Currency,
+              },
+            ],
+            attributes: { exclude: ['currencyId'] },
+          },
+        ],
+        attributes: { exclude: ['countryId'] },
+        order: [['createdAt', 'DESC']],
+      });
+    } catch (error) {
+      throw new CustomError(DAO.FAILED.GET.ALL(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
+    }
+  },
+
+  getById: async (postId) => {
+    try {
+      return await models.Post.findOne({
+        where: {
+          id: postId,
+        },
+        include: [
+          {
+            model: models.Country,
+            include: [
+              {
+                model: models.Currency,
+              },
+            ],
+            attributes: { exclude: ['currencyId'] },
+          },
+        ],
+        attributes: { exclude: ['countryId'] },
+      });
+    } catch (error) {
+      throw new CustomError(DAO.FAILED.GET.BY_ID(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
+    }
+  },
 };
 
 module.exports = postDao;

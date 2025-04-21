@@ -17,7 +17,7 @@ const countryDao = {
     try {
       return await models.Country.findAll();
     } catch (error) {
-      throw new CustomError(DAO.FAILED.GET.RECENT(ENTITY.COUNTRY, error), STATUS_CODE.SERVER_ERROR);
+      throw new CustomError(DAO.FAILED.GET.ALL(ENTITY.COUNTRY, error), STATUS_CODE.SERVER_ERROR);
     }
   },
 

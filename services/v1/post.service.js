@@ -6,6 +6,7 @@ const postDao = require('../../repositories/v1/post.dao');
 const countryDao = require('../../repositories/v1/country.dao');
 const { LOG_TYPE } = require('../../constants/logger.constants');
 const { STATUS_CODE } = require('../../constants/app.constants');
+const { POST_TYPE } = require('../../constants/post.constant');
 const { RESPONSE } = require('../../common/messages');
 
 const postService = {
@@ -52,6 +53,56 @@ const postService = {
       status: STATUS_CODE.CREATED,
       data: {
         post: newPost,
+      },
+    };
+  },
+
+  getAllPosts: async (postType) => {
+    // validate post type
+    const isValidType = Object.values(POST_TYPE).includes(postType);
+    if (!isValidType) {
+      throw new CustomError(RESPONSE.POST.INVALID_TYPE, STATUS_CODE.BAD_REQUEST);
+    }
+
+    // get all posts
+    let posts = await postDao.getAll();
+
+    // filter out posts for user
+    if (postType === POST_TYPE.USER) {
+      posts = posts.filter((post) => post.userId === userId);
+    }
+
+    // parse country language
+    for (const post of posts) {
+      post.Country.languages = JSON.parse(post.Country.languages);
+    }
+
+    return {
+      success: true,
+      status: STATUS_CODE.OK,
+      data: {
+        posts: posts,
+      },
+    };
+  },
+
+  getPostById: async (postId) => {
+    // validate post id
+    if (isNaN(postId) || isNaN(parseFloat(postId))) {
+      throw new CustomError(RESPONSE.POST.INVALID_ID, STATUS_CODE.BAD_REQUEST);
+    }
+
+    // fetch the post
+    const post = await postDao.getById(postId);
+    if (!post) {
+      throw new CustomError(RESPONSE.POST.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    return {
+      success: true,
+      status: STATUS_CODE.OK,
+      data: {
+        post: post,
       },
     };
   },

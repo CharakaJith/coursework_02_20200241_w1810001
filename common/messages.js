@@ -21,6 +21,11 @@ module.exports = {
     COUNTRY: {
       INVALID: 'The country does not exist.',
     },
+    POST: {
+      INVALID_ID: 'Invalid format for post ID.',
+      INVALID_TYPE: 'Invalid post type.',
+      NOT_FOUND: 'Post not found.',
+    },
   },
 
   // validation error messages
@@ -38,6 +43,7 @@ module.exports = {
       UPDATE: (entity, error) => `Failed to update ${entity}: ${error.message}`,
       DELETE: (entity, error) => `Failed to delete ${entity}: ${error.message}`,
       GET: {
+        ALL: (entity, error) => `Failed to retrieve all ${entity}: ${error.message}`,
         BY_ID: (entity, error) => `Failed to retrieve ${entity} by ID: ${error.message}`,
         BY_EMAIL: (entity, error) => `Failed to retrieve ${entity} by email: ${error.message}`,
         BY_CODE: (entity, error) => `Failed to retrieve ${entity} by code: ${error.message}`,

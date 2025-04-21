@@ -334,7 +334,7 @@
             }
           },
           "401": {
-            "description": "Authentication token failed or user's old password is incorrect.",
+            "description": "Authentication token failed.",
             "schema": {
               "$ref": "#/definitions/AuthFailedResponse"
             }
@@ -343,6 +343,132 @@
             "description": "Invalid country ID.",
             "schema": {
               "$ref": "#/definitions/PostCreateNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/post/all": {
+      "get": {
+        "tags": ["Post"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Get all blog-posts in the system.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "All posts fetched successfully.",
+            "schema": {
+              "$ref": "#/definitions/PostGetAllSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid post type.",
+            "schema": {
+              "$ref": "#/definitions/PostGetAllBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/post/user": {
+      "get": {
+        "tags": ["Post"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Get all blog-posts updated by the user.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "All posts fetched successfully.",
+            "schema": {
+              "$ref": "#/definitions/PostGetAllSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid post type.",
+            "schema": {
+              "$ref": "#/definitions/PostGetAllBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/post/1": {
+      "get": {
+        "tags": ["Post"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Get a blog-post by ID.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Blog post fetched successfully.",
+            "schema": {
+              "$ref": "#/definitions/PostGetByIdSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid format for the post ID.",
+            "schema": {
+              "$ref": "#/definitions/PostGetByIdBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "schema": {
+              "$ref": "#/definitions/PostGetByIdNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
             }
           }
         }
@@ -1185,6 +1311,10 @@
                       "type": "number",
                       "example": 1
                     },
+                    "userId": {
+                      "type": "number",
+                      "example": 1
+                    },
                     "title": {
                       "type": "string",
                       "example": "First day at France"
@@ -1287,6 +1417,346 @@
                 "message": {
                   "type": "string",
                   "example": "The country does not exist."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "PostGetAllSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "posts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "userId": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "First day at France"
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "Touching down in France felt like stepping into a dream. From the aroma of fresh croissants in the morning air to the charm of cobblestone streets and cozy cafés, everything was surreal. Navigating a new language and culture was both exciting and humbling — but every smile, every “bonjour,” made the journey feel warm and welcoming."
+                      },
+                      "visitDate": {
+                        "type": "string",
+                        "example": "2025-03-31T00:00:00.000Z"
+                      },
+                      "Country": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number",
+                            "example": 23
+                          },
+                          "officialName": {
+                            "type": "string",
+                            "example": "French Republic"
+                          },
+                          "commonName": {
+                            "type": "string",
+                            "example": "France"
+                          },
+                          "capital": {
+                            "type": "string",
+                            "example": "Paris"
+                          },
+                          "languages": {
+                            "type": "object",
+                            "properties": {
+                              "fra": {
+                                "type": "string",
+                                "example": "French"
+                              }
+                            }
+                          },
+                          "Currency": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number",
+                                "example": 12
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Euro"
+                              },
+                              "code": {
+                                "type": "string",
+                                "example": "EUR"
+                              },
+                              "symbol": {
+                                "type": "string",
+                                "example": "€"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2025-04-20T17:02:23.103Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2025-04-20T17:02:23.103Z"
+                              }
+                            }
+                          },
+                          "flagUrl": {
+                            "type": "string",
+                            "example": "https://flagcdn.com/fr.svg"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2025-04-20T17:04:54.634Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2025-04-20T17:04:54.634Z"
+                          }
+                        }
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2025-04-20T17:55:59.105Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2025-04-20T17:55:59.105Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostGetAllBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid post type."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "PostGetByIdSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "post": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "userId": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "First day at France"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "Touching down in France felt like stepping into a dream. From the aroma of fresh croissants in the morning air to the charm of cobblestone streets and cozy cafés, everything was surreal. Navigating a new language and culture was both exciting and humbling — but every smile, every “bonjour,” made the journey feel warm and welcoming."
+                    },
+                    "visitDate": {
+                      "type": "string",
+                      "example": "2025-03-31T00:00:00.000Z"
+                    },
+                    "Country": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number",
+                          "example": 23
+                        },
+                        "officialName": {
+                          "type": "string",
+                          "example": "French Republic"
+                        },
+                        "commonName": {
+                          "type": "string",
+                          "example": "France"
+                        },
+                        "capital": {
+                          "type": "string",
+                          "example": "Paris"
+                        },
+                        "languages": {
+                          "type": "object",
+                          "properties": {
+                            "fra": {
+                              "type": "string",
+                              "example": "French"
+                            }
+                          }
+                        },
+                        "Currency": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number",
+                              "example": 12
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Euro"
+                            },
+                            "code": {
+                              "type": "string",
+                              "example": "EUR"
+                            },
+                            "symbol": {
+                              "type": "string",
+                              "example": "€"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "example": "2025-04-20T17:02:23.103Z"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "example": "2025-04-20T17:02:23.103Z"
+                            }
+                          }
+                        },
+                        "flagUrl": {
+                          "type": "string",
+                          "example": "https://flagcdn.com/fr.svg"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2025-04-20T17:04:54.634Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2025-04-20T17:04:54.634Z"
+                        }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-04-20T17:55:59.105Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2025-04-20T17:55:59.105Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostGetByIdBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid format for post ID."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostGetByIdNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Post not found."
                 }
               }
             }
