@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { CircleUser, Info, Phone, ChevronsUpDown, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CircleUser, Info, Phone, ChevronsUpDown, LogOut, House } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import {
@@ -17,6 +18,18 @@ function NavUser() {
   const [userName, setUserName] = useState('');
 
   const { isMobile } = useSidebar();
+
+  const navigate = useNavigate();
+
+  // go to home
+  const handleHomeClick = () => {
+    navigate('/home');
+  };
+
+  // go to about
+  const handleAboutClick = () => {
+    navigate('/about');
+  };
 
   useEffect(() => {
     const sessionUser = sessionStorage.getItem('user');
@@ -87,11 +100,19 @@ function NavUser() {
 
             <DropdownMenuSeparator />
 
+            {/* home */}
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={handleHomeClick}>
+                <House />
+                Home
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
             {/* about us */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAboutClick}>
                 <Info />
-                About Us
+                About
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
@@ -99,7 +120,7 @@ function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Phone />
-                Contact
+                Contact Us
               </DropdownMenuItem>
             </DropdownMenuGroup>
 

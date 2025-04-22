@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppSidebar from '../../components/app-sidebar/app-sidebar';
-import { Separator } from '@/components/ui/separator';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,6 +21,7 @@ function HomePage() {
 
   return (
     <SidebarProvider>
+      {/* side nav bar */}
       <AppSidebar />
     </SidebarProvider>
   );
