@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CircleUser, Info, Phone, ChevronsUpDown, LogOut, House } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -34,6 +34,14 @@ function NavUser() {
   // go to contact
   const handleContactClick = () => {
     navigate('/contact');
+  };
+
+  // handle logout
+  const handleLogout = () => {
+    // clear session storage
+    sessionStorage.clear();
+
+    navigate('/');
   };
 
   useEffect(() => {
@@ -133,7 +141,7 @@ function NavUser() {
 
             {/* logout */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>

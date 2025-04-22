@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppSidebar from '../../components/app-sidebar/app-sidebar';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
@@ -7,6 +9,21 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 import contact from '../../assets/images/contact.jpg';
 
 function ContactPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (accessToken) {
+      setIsAuthenticated(true);
+    } else {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  if (!isAuthenticated) return null;
+
   return (
     <div>
       <SidebarProvider>
@@ -33,8 +50,8 @@ function ContactPage() {
               <h4 className="text-xl mb-0 text-[#6A9C89] font-bold">How can we help you?</h4>
               <h1 className="text-8xl font-extrabold">Contact Us</h1>
 
-              <p className="mb-0 text-2xl">We are here to help and answer any questions you might have.</p>
-              <p className="text-2xl">We look forward to hearing from you!</p>
+              <p className="mb-0 text-xl">We are here to help and answer any questions you might have.</p>
+              <p className="text-xl">We look forward to hearing from you!</p>
 
               <div className="flex items-center space-x-2 mb-2 mt-6">
                 <MapPin />

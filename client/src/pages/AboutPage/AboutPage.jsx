@@ -1,13 +1,30 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppSidebar from '../../components/app-sidebar/app-sidebar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 function AboutPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const navigate = useNavigate();
+
   // handle mail click
   const handleMailClick = () => {
     window.location.href = 'mailto:charaka.20200241@iit.ac.lk';
   };
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (accessToken) {
+      setIsAuthenticated(true);
+    } else {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  if (!isAuthenticated) return null;
 
   return (
     <div>
