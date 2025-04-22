@@ -31,6 +31,11 @@ function NavUser() {
     navigate('/about');
   };
 
+  // go to contact
+  const handleContactClick = () => {
+    navigate('/contact');
+  };
+
   useEffect(() => {
     const sessionUser = sessionStorage.getItem('user');
     if (sessionUser) {
@@ -118,7 +123,7 @@ function NavUser() {
 
             {/* contact */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleContactClick}>
                 <Phone />
                 Contact Us
               </DropdownMenuItem>

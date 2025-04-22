@@ -3,8 +3,6 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/co
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
-import aboutBg from '../../assets/images/about-bg.png';
-
 function AboutPage() {
   // handle mail click
   const handleMailClick = () => {
@@ -34,7 +32,7 @@ function AboutPage() {
           {/* body */}
           <div className="flex flex-1 flex-col p-4 h-screen">
             <div className="flex flex-1">
-              <div className="w-full h-full rounded-xl bg-[#C6E7FF] text-black flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium">
+              <div className="w-full h-full rounded-xl bg-[#6A9C89] text-white flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium">
                 <p>
                   TravelTales is an innovative, tourism-focused blogging platform designed as part of the Coursework 02 requirements for the Advanced
                   Server-Side Web Development module. It combines real-time country data with user-generated travel stories to create an engaging,
@@ -53,7 +51,7 @@ function AboutPage() {
                 <p>
                   - Charaka Jith Gunasinghe (20200241/w1810001)
                   <br />
-                  <p onClick={handleMailClick} className="text-blue-500 hover:text-blue-700 cursor-pointer underline">
+                  <p onClick={handleMailClick} className="text-[#A1E3F9] hover:text-[#7BCCE7] cursor-pointer underline">
                     - charaka.20200241@iit.ac.lk
                   </p>
                 </p>
