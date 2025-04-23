@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react';
 import DatePicker from '../date-picker/date-picker';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarSeparator } from '@/components/ui/sidebar';
 import NavUser from '../nav-user/nav-user';
+import { USER } from '../../common/messages';
 
 function AppSidebar() {
   const navigate = useNavigate();
@@ -11,6 +12,9 @@ function AppSidebar() {
   const handleLogout = () => {
     // clear session storage
     sessionStorage.clear();
+
+    // set message
+    sessionStorage.setItem('message', USER.LOGOUT_SUCCESS);
 
     navigate('/');
   };

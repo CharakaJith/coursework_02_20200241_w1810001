@@ -5,6 +5,7 @@ import { MapPin, Phone, Mail } from 'lucide-react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { USER } from '../../common/messages';
 
 import contact from '../../assets/images/contact.jpg';
 
@@ -18,6 +19,9 @@ function ContactPage() {
     if (accessToken) {
       setIsAuthenticated(true);
     } else {
+      // set message
+      sessionStorage.setItem('message', USER.LOGGED_OUT);
+
       navigate('/');
     }
   }, [navigate]);
@@ -47,7 +51,7 @@ function ContactPage() {
           {/* body */}
           <div className="flex flex-1 flex-row p-4 h-screen">
             <div className="w-1/2 h-full rounded-xl bg-[#FFE3E1] text-black flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium">
-              <h4 className="text-xl mb-0 text-[#6A9C89] font-bold">How can we help you?</h4>
+              <h4 className="text-xl mb-0 text-[#006A67] font-bold">How can we help you?</h4>
               <h1 className="text-8xl font-extrabold">Contact Us</h1>
 
               <p className="mb-0 text-xl">We are here to help and answer any questions you might have.</p>
@@ -63,7 +67,7 @@ function ContactPage() {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail />
-                <p className="text-[#6A9C89] hover:text-[#4F7C63] cursor-pointer">charaka.info@gmail.com</p>
+                <p className="text-[#006A67] hover:text-[#004D4B] cursor-pointer">charaka.info@gmail.com</p>
               </div>
             </div>
 

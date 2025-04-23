@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { USER } from '../../common/messages';
 
 function NavUser() {
   const [user, setUser] = useState({});
@@ -40,6 +41,9 @@ function NavUser() {
   const handleLogout = () => {
     // clear session storage
     sessionStorage.clear();
+
+    // set message
+    sessionStorage.setItem('message', USER.LOGOUT_SUCCESS);
 
     navigate('/');
   };

@@ -7,6 +7,7 @@ export const VALIDATE = {
 // user status messages
 export const USER = {
   SIGNED_UP: 'Signup successful. Please log in to continue.',
+  LOGOUT_SUCCESS: 'You have been logged out successfully.',
   LOGGED_OUT: 'You must be logged in to continue.',
   SESSION_EXP: 'Your session has expired. Please log in again.',
   PASSWORD_CHANGED: 'Your password has been changed. Please log in again.',

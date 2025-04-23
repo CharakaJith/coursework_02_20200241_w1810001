@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { VALIDATE, USER } from '../../common/messages';
+import InfoPopup from '../..//modals/info-popup';
+import { VALIDATE } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,6 +18,9 @@ function LoginForm({ goToSignup }) {
 
   const [error, setError] = useState('');
   const [isError, setIsError] = useState(false);
+
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -89,6 +93,15 @@ function LoginForm({ goToSignup }) {
     goToSignup?.(); // open signup form
   };
 
+  // check pop up message
+  useEffect(() => {
+    const message = sessionStorage.getItem('message');
+    if (message) {
+      setInfoMessage(message);
+      setInfoOpen(true);
+    }
+  }, []);
+
   return (
     <div className="w-full max-w-lg p-8 rounded-4xl shadow-lg bg-blue-950 text-white">
       {/* form heading */}
@@ -142,6 +155,9 @@ function LoginForm({ goToSignup }) {
           Sign Up
         </span>
       </p>
+
+      {/* info popup modal */}
+      <InfoPopup isOpen={infoOpen} message={infoMessage} />
     </div>
   );
 }

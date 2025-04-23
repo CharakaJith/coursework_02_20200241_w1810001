@@ -4,7 +4,7 @@ import SignUpForm from '@/components/sign-up/signup-form';
 import LoginForm from '@/components/log-in/login-form';
 
 function LandingPage() {
-  const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2 bg-gradient-to-r from-blue-950 via-blue-500 to-white">

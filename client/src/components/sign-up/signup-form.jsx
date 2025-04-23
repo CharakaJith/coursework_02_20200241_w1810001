@@ -114,6 +114,8 @@ function SignUpForm({ goToLogin }) {
         .post('/api/v1/user', userData, {})
         .then((res) => {
           if (res.data.success === true) {
+            sessionStorage.setItem('message', USER.SIGNED_UP);
+
             goToLogin?.(); // open login form
           }
         })
