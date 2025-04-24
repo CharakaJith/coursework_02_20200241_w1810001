@@ -1,10 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import map from '../../assets/animations/map.gif';
 import SignUpForm from '@/components/sign-up/signup-form';
 import LoginForm from '@/components/log-in/login-form';
 
 function LandingPage() {
   const [showLogin, setShowLogin] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (accessToken) {
+      setIsLoggedIn(true);
+
+      navigate('/home');
+    }
+  }, [navigate]);
+
+  if (isLoggedIn) return null;
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2 bg-gradient-to-r from-blue-950 via-blue-500 to-white">

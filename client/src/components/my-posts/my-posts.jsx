@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCcw } from 'lucide-react';
+import { Search, RefreshCcw, Trash, Pencil, Heart, MessageSquare } from 'lucide-react';
 import { USER } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -10,7 +10,7 @@ const api = axios.create({
   baseURL: apiUrl,
 });
 
-function PostDisplay() {
+function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -39,7 +39,7 @@ function PostDisplay() {
     fetchPosts();
   };
 
-  // fetch blog posts
+  // fetch blog posts for user
   const fetchPosts = () => {
     // validate access token
     const accessToken = sessionStorage.getItem('accessToken');
@@ -51,7 +51,7 @@ function PostDisplay() {
     }
 
     api
-      .get('/api/v1/post/all', {
+      .get('/api/v1/post/user', {
         headers: {
           Authorization: `"${accessToken}"`,
         },
@@ -120,23 +120,50 @@ function PostDisplay() {
       {filteredPosts.length !== 0 ? (
         // post blocks
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-5">
+          <div className="flex flex-col gap-3">
             {filteredPosts.map((post, i) => (
-              // post display area
-              <div
-                key={post.id || i}
-                className="rounded-xl bg-[#ECEBDE] flex flex-col p-4 transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer hover:bg-[#D7D3BF]"
-              >
-                {/* post title and image */}
-                <div className="flex items-center justify-between mb-1">
-                  <div className="text-lg font-bold leading-tight">{post.title}</div>
-                  <img src={post.Country.flagUrl} alt="Country Flag" className="w-15 h-15 object-contain rounded-2xl" />
+              <div key={post.id || i} className="flex items-center justify-between gap-4">
+                {/* post display card */}
+                <div className="flex-1 rounded-xl bg-[#ECEBDE] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 transition-transform duration-300 ease-in-out hover:scale-[1.01] cursor-pointer hover:bg-[#D7D3BF]">
+                  <div className="flex-1">
+                    <div className="text-lg font-bold mb-1">{post.title}</div>
+                    <div className="text-sm leading-snug">{post.content.slice(0, 150) + '...'}</div>
+                  </div>
                 </div>
 
-                <hr className="mx-0 my-2 border-t border-[#1a2533]" />
+                {/* status */}
+                <div className="flex items-center gap-8 mr-5 ml-5">
+                  {/* likes */}
+                  <div className="flex flex-col items-center text-[#BE3D2A] transition-transform duration-200 hover:scale-125">
+                    <Heart className="w-8 h-8" />
+                    <span className="text-base font-bold">12</span>
+                  </div>
 
-                {/* post content */}
-                <div className="text-sm leading-snug">{post.content.length > 350 ? post.content.slice(0, 350) + '...' : post.content}</div>
+                  {/* comments */}
+                  <div className="flex flex-col items-center text-[#49108B] transition-transform duration-200 hover:scale-125">
+                    <MessageSquare className="w-8 h-8" />
+                    <span className="text-base font-bold">12</span>
+                  </div>
+                </div>
+
+                {/* action buttons */}
+                <div className="flex flex-col gap-2 items-center">
+                  {/* delete button */}
+                  <button
+                    className="bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                    onClick={handleSearch}
+                  >
+                    <Trash />
+                  </button>
+
+                  {/* edit button */}
+                  <button
+                    className="bg-[#FFD95F] hover:bg-[#E6B92E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                    onClick={handleSearch}
+                  >
+                    <Pencil />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -153,4 +180,4 @@ function PostDisplay() {
   );
 }
 
-export default PostDisplay;
+export default MyPosts;

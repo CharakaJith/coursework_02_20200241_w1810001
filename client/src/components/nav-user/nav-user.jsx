@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircleUser, Info, Phone, ChevronsUpDown, LogOut, House } from 'lucide-react';
+import { CircleUser, ChevronsUpDown, LogOut, Pencil, List } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import {
@@ -22,21 +22,6 @@ function NavUser() {
 
   const navigate = useNavigate();
 
-  // go to home
-  const handleHomeClick = () => {
-    navigate('/home');
-  };
-
-  // go to about
-  const handleAboutClick = () => {
-    navigate('/about');
-  };
-
-  // go to contact
-  const handleContactClick = () => {
-    navigate('/contact');
-  };
-
   // handle logout
   const handleLogout = () => {
     // clear session storage
@@ -46,6 +31,11 @@ function NavUser() {
     sessionStorage.setItem('message', USER.LOGOUT_SUCCESS);
 
     navigate('/');
+  };
+
+  // handle my posts click
+  const handleMyPostClick = () => {
+    navigate('/posts');
   };
 
   useEffect(() => {
@@ -108,8 +98,9 @@ function NavUser() {
 
             <DropdownMenuSeparator />
 
+            {/* account */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <CircleUser />
                 Account
               </DropdownMenuItem>
@@ -117,27 +108,17 @@ function NavUser() {
 
             <DropdownMenuSeparator />
 
-            {/* home */}
+            {/* post */}
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleHomeClick}>
-                <House />
-                Home
+              <DropdownMenuItem className="cursor-pointer">
+                <Pencil />
+                New post
               </DropdownMenuItem>
             </DropdownMenuGroup>
-
-            {/* about us */}
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleAboutClick}>
-                <Info />
-                About
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            {/* contact */}
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleContactClick}>
-                <Phone />
-                Contact Us
+              <DropdownMenuItem className="cursor-pointer" onClick={handleMyPostClick}>
+                <List />
+                My posts
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
@@ -145,7 +126,7 @@ function NavUser() {
 
             {/* logout */}
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                 <LogOut />
                 Log out
               </DropdownMenuItem>

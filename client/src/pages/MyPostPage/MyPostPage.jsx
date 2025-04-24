@@ -4,10 +4,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/co
 import { Separator } from '@/components/ui/separator';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import AppSidebar from '../../components/app-sidebar/app-sidebar';
-import PostDisplay from '../..//components/post-display/post-display';
+import MyPosts from '@/components/my-posts/my-posts';
 import { USER } from '../../common/messages';
 
-function HomePage() {
+function MyPostPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const navigate = useNavigate();
@@ -39,17 +39,17 @@ function HomePage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-3xl font-bold">Recent Posts</BreadcrumbPage>
+                <BreadcrumbPage className="text-3xl font-bold">My Posts</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
 
-        {/* blog post display */}
-        <PostDisplay />
+        {/* posts display */}
+        <MyPosts />
       </SidebarInset>
     </SidebarProvider>
   );
 }
 
-export default HomePage;
+export default MyPostPage;
