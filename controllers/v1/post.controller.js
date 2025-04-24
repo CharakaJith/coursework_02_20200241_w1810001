@@ -65,6 +65,27 @@ const postController = {
     }
   },
 
+  update: async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const postData = ({ id, title, content, countryId, visitDate } = req.body);
+      postData.userId = userId;
+
+      const response = await postService.updatePost(postData);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   delete: async (req, res, next) => {
     try {
       const userId = req.user.id;

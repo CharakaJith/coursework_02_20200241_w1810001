@@ -26,6 +26,14 @@ const postDao = {
             ],
             attributes: { exclude: ['currencyId'] },
           },
+          {
+            model: models.Like,
+            attributes: { exclude: ['postId'] },
+          },
+          {
+            model: models.Comment,
+            attributes: { exclude: ['postId'] },
+          },
         ],
         attributes: { exclude: ['countryId'] },
         order: [['createdAt', 'DESC']],
@@ -51,11 +59,39 @@ const postDao = {
             ],
             attributes: { exclude: ['currencyId'] },
           },
+          {
+            model: models.Like,
+            attributes: { exclude: ['postId'] },
+          },
+          {
+            model: models.Comment,
+            attributes: { exclude: ['postId'] },
+          },
         ],
         attributes: { exclude: ['countryId'] },
       });
     } catch (error) {
       throw new CustomError(DAO.FAILED.GET.BY_ID(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
+    }
+  },
+
+  update: async (post) => {
+    try {
+      return await models.Post.update(
+        {
+          title: post.title,
+          content: post.content,
+          countryId: post.countryId,
+          visitDate: post.visitDate,
+        },
+        {
+          where: {
+            id: post.id,
+          },
+        }
+      );
+    } catch (error) {
+      throw new CustomError(DAO.FAILED.UPDATE(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
     }
   },
 

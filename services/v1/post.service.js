@@ -109,6 +109,66 @@ const postService = {
     };
   },
 
+  updatePost: async (data) => {
+    const { id, title, content, countryId, visitDate, userId } = data;
+
+    // validate user details
+    const errorArray = [];
+    errorArray.push(await fieldValidator.validate_number(id, 'id'));
+    errorArray.push(await fieldValidator.validate_string(title, 'title'));
+    errorArray.push(await fieldValidator.validate_string(content, 'content'));
+    errorArray.push(await fieldValidator.validate_number(countryId, 'countryId'));
+    errorArray.push(await fieldValidator.validate_date(visitDate, 'visitDate'));
+
+    // check request data
+    const filteredErrors = errorArray.filter((obj) => obj !== 1);
+    if (filteredErrors.length !== 0) {
+      logger(LOG_TYPE.ERROR, false, STATUS_CODE.BAD_REQUEST, filteredErrors);
+
+      return {
+        success: false,
+        status: STATUS_CODE.BAD_REQUEST,
+        data: filteredErrors,
+      };
+    }
+
+    // fetch and validate post
+    const post = await postDao.getById(id);
+    if (!post) {
+      throw new CustomError(RESPONSE.POST.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+    if (post.userId !== userId) {
+      throw new CustomError(JWT.AUTH.FORBIDDEN, STATUS_CODE.FORBIDDON);
+    }
+
+    // validate country
+    const country = await countryDao.getById(countryId);
+    if (!country) {
+      throw new CustomError(RESPONSE.COUNTRY.INVALID, STATUS_CODE.NOT_FOUND);
+    }
+
+    // update post
+    const postDetails = {
+      id: post.id,
+      title: title,
+      content: content,
+      countryId: countryId,
+      visitDate: visitDate,
+    };
+    await postDao.update(postDetails);
+
+    // fetch updated post
+    const updatedPost = await postDao.getById(post.id);
+
+    return {
+      success: true,
+      status: STATUS_CODE.CREATED,
+      data: {
+        post: updatedPost,
+      },
+    };
+  },
+
   deletePost: async (data) => {
     const { userId, postId } = data;
 

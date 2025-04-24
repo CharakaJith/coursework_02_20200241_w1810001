@@ -7,7 +7,8 @@ postRouter.use(authenticate);
 
 postRouter.post('/', postController.create);
 postRouter.get('/:type', postController.getAll);
-postRouter.get('/:id', postController.getById);
+postRouter.get('/single/:id', postController.getById);
+postRouter.put('/', postController.update);
 postRouter.delete('/:id', postController.delete);
 
 module.exports = postRouter;
