@@ -8,7 +8,7 @@ function LandingPage() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2 bg-gradient-to-r from-blue-950 via-blue-500 to-white">
-      {/* left hand side */}
+      {/* landing image (left) */}
       <div className="hidden lg:flex items-center justify-center">
         <div className="h-full w-full flex items-center justify-center">
           <div className="flex flex-col items-center">
@@ -18,7 +18,7 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* right hand side */}
+      {/* login/signup form (right) */}
       <div className="flex flex-1 items-center justify-center p-6 md:p-10">
         <div className="w-full max-w-md text-center">
           {showLogin ? <LoginForm goToSignup={() => setShowLogin(false)} /> : <SignUpForm goToLogin={() => setShowLogin(true)} />}

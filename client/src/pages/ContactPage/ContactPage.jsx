@@ -50,6 +50,7 @@ function ContactPage() {
 
           {/* body */}
           <div className="flex flex-1 flex-row p-4 h-screen">
+            {/* details box (left) */}
             <div className="w-1/2 h-full rounded-xl bg-[#FFE3E1] text-black flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium">
               <h4 className="text-xl mb-0 text-[#006A67] font-bold">How can we help you?</h4>
               <h1 className="text-8xl font-extrabold">Contact Us</h1>
@@ -71,6 +72,7 @@ function ContactPage() {
               </div>
             </div>
 
+            {/* contact image (right) */}
             <div className="w-1/2 h-full rounded-xl flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium ml-4 border-4 border-[#6A9C89] shadow-lg">
               <img src={contact} className="max-w-[80%] mx-auto" alt="Contact" />
             </div>
