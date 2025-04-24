@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCcw, Trash, Pencil, Heart, MessageSquare } from 'lucide-react';
+import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { USER } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -13,13 +13,12 @@ const api = axios.create({
 function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState([]);
 
   const navigate = useNavigate();
 
   // handle search
   const handleSearch = () => {
-    setFilteredPosts(
+    setPosts(
       posts.filter((post) => {
         return post.title.toLowerCase().includes(search.toLowerCase()) || post.content.toLowerCase().includes(search.toLowerCase());
       })
@@ -37,6 +36,45 @@ function MyPosts() {
   const handleRefresh = () => {
     setSearch('');
     fetchPosts();
+  };
+
+  // confrim delete
+  const handleDelete = (postId) => {
+    confrimDelete(postId);
+  };
+
+  // handle delete
+  const confrimDelete = (postId) => {
+    // validate access token
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      sessionStorage.setItem('message', USER.SESSION_EXP);
+      navigate('/');
+
+      return;
+    }
+
+    api
+      .delete(`/api/v1/post/${postId}`, {
+        headers: {
+          Authorization: `"${accessToken}"`,
+        },
+      })
+      .then()
+      .catch((error) => {
+        // check if access token expire
+        if (error.response.data.response.status === 401) {
+          sessionStorage.clear();
+          sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+          navigate('/');
+          return;
+        }
+
+        // check for success response
+        if (error.response.data.response.status === 410) {
+          setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        }
+      });
   };
 
   // fetch blog posts for user
@@ -60,7 +98,6 @@ function MyPosts() {
         if (res.data.success === true) {
           const posts = res.data.response.data.posts;
           setPosts(posts);
-          setFilteredPosts(posts);
         }
       })
       .catch((error) => {
@@ -117,11 +154,11 @@ function MyPosts() {
       </div>
 
       {/* post display area */}
-      {filteredPosts.length !== 0 ? (
+      {posts.length !== 0 ? (
         // post blocks
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="flex flex-col gap-3">
-            {filteredPosts.map((post, i) => (
+            {posts.map((post, i) => (
               <div key={post.id || i} className="flex items-center justify-between gap-4">
                 {/* post display card */}
                 <div className="flex-1 rounded-xl bg-[#ECEBDE] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 transition-transform duration-300 ease-in-out hover:scale-[1.01] cursor-pointer hover:bg-[#D7D3BF]">
@@ -134,8 +171,14 @@ function MyPosts() {
                 {/* status */}
                 <div className="flex items-center gap-8 mr-5 ml-5">
                   {/* likes */}
+                  <div className="flex flex-col items-center text-[#007F73] transition-transform duration-200 hover:scale-125">
+                    <ThumbsUp className="w-8 h-8" />
+                    <span className="text-base font-bold">12</span>
+                  </div>
+
+                  {/* dislikes */}
                   <div className="flex flex-col items-center text-[#BE3D2A] transition-transform duration-200 hover:scale-125">
-                    <Heart className="w-8 h-8" />
+                    <ThumbsDown className="w-8 h-8" />
                     <span className="text-base font-bold">12</span>
                   </div>
 
@@ -151,7 +194,7 @@ function MyPosts() {
                   {/* delete button */}
                   <button
                     className="bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
-                    onClick={handleSearch}
+                    onClick={() => handleDelete(post.id)}
                   >
                     <Trash />
                   </button>
