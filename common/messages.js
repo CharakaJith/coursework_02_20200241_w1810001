@@ -25,6 +25,7 @@ module.exports = {
       INVALID_ID: 'Invalid format for post ID.',
       INVALID_TYPE: 'Invalid post type.',
       NOT_FOUND: 'Post not found.',
+      DELETED: 'Post has been permanently deleted.',
     },
   },
 

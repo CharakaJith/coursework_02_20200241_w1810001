@@ -7,7 +7,7 @@ const countryDao = require('../../repositories/v1/country.dao');
 const { LOG_TYPE } = require('../../constants/logger.constants');
 const { STATUS_CODE } = require('../../constants/app.constants');
 const { POST_TYPE } = require('../../constants/post.constant');
-const { RESPONSE } = require('../../common/messages');
+const { RESPONSE, JWT } = require('../../common/messages');
 
 const postService = {
   createNewPost: async (postData) => {
@@ -105,6 +105,35 @@ const postService = {
       status: STATUS_CODE.OK,
       data: {
         post: post,
+      },
+    };
+  },
+
+  deletePost: async (data) => {
+    const { userId, postId } = data;
+
+    // validate post id
+    if (isNaN(postId) || isNaN(parseFloat(postId))) {
+      throw new CustomError(RESPONSE.POST.INVALID_ID, STATUS_CODE.BAD_REQUEST);
+    }
+
+    // fetch and validate post
+    const post = await postDao.getById(postId);
+    if (!post) {
+      throw new CustomError(RESPONSE.POST.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+    if (post.userId !== userId) {
+      throw new CustomError(JWT.AUTH.FORBIDDEN, STATUS_CODE.FORBIDDON);
+    }
+
+    // delete post
+    await postDao.delete(post.id);
+
+    return {
+      success: true,
+      status: STATUS_CODE.GONE,
+      data: {
+        message: RESPONSE.POST.DELETED,
       },
     };
   },

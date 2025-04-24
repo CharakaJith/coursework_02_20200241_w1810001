@@ -64,6 +64,30 @@ const postController = {
       next(error);
     }
   },
+
+  delete: async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const postId = req.params.id;
+      const postData = {
+        userId,
+        postId,
+      };
+
+      const response = await postService.deletePost(postData);
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = postController;

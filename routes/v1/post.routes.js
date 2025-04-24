@@ -8,5 +8,6 @@ postRouter.use(authenticate);
 postRouter.post('/', postController.create);
 postRouter.get('/:type', postController.getAll);
 postRouter.get('/:id', postController.getById);
+postRouter.delete('/:id', postController.delete);
 
 module.exports = postRouter;

@@ -58,6 +58,18 @@ const postDao = {
       throw new CustomError(DAO.FAILED.GET.BY_ID(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
     }
   },
+
+  delete: async (postId) => {
+    try {
+      await models.Post.destroy({
+        where: {
+          id: postId,
+        },
+      });
+    } catch (error) {
+      throw new CustomError(DAO.FAILED.DELETE(ENTITY.POST, error), STATUS_CODE.SERVER_ERROR);
+    }
+  },
 };
 
 module.exports = postDao;
