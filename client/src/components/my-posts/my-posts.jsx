@@ -2,7 +2,9 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
-import { USER } from '../../common/messages';
+import ConfirmPopup from '../../modals/confrim-popup';
+import InfoPopup from '@/modals/info-popup';
+import { USER, MODAL } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,6 +15,14 @@ const api = axios.create({
 function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
+
+  const [postId, setPostId] = useState('');
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState('');
+  const [confirmMessage, setConfirmMessage] = useState('');
+
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -40,11 +50,18 @@ function MyPosts() {
 
   // confrim delete
   const handleDelete = (postId) => {
-    confrimDelete(postId);
+    setPostId(postId);
+
+    setConfirmTitle(MODAL.DELETE_POST.TITLE);
+    setConfirmMessage(MODAL.DELETE_POST.MESSAGE);
+    setConfirmOpen(true);
+
+    // close in 30 seconds
+    setTimeout(() => setConfirmOpen(false), 30000);
   };
 
   // handle delete
-  const confrimDelete = (postId) => {
+  const confrimDelete = () => {
     // validate access token
     const accessToken = sessionStorage.getItem('accessToken');
     if (!accessToken) {
@@ -60,7 +77,16 @@ function MyPosts() {
           Authorization: `"${accessToken}"`,
         },
       })
-      .then()
+      .then((res) => {
+        if (res.data.success === true) {
+          setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+          setConfirmOpen(false);
+
+          // set info message
+          setInfoMessage(MODAL.DELETE_POST.SUCCESS);
+          setInfoOpen(true);
+        }
+      })
       .catch((error) => {
         // check if access token expire
         if (error.response.data.response.status === 401) {
@@ -68,11 +94,6 @@ function MyPosts() {
           sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
           navigate('/');
           return;
-        }
-
-        // check for success response
-        if (error.response.data.response.status === 410) {
-          setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
         }
       });
   };
@@ -171,19 +192,19 @@ function MyPosts() {
                 {/* status */}
                 <div className="flex items-center gap-8 mr-5 ml-5">
                   {/* likes */}
-                  <div className="flex flex-col items-center text-[#007F73] transition-transform duration-200 hover:scale-125">
+                  <div className="flex flex-col items-center text-[#007F73] transition-transform duration-200 hover:scale-125 cursor-pointer">
                     <ThumbsUp className="w-8 h-8" />
                     <span className="text-base font-bold">12</span>
                   </div>
 
                   {/* dislikes */}
-                  <div className="flex flex-col items-center text-[#BE3D2A] transition-transform duration-200 hover:scale-125">
+                  <div className="flex flex-col items-center text-[#BE3D2A] transition-transform duration-200 hover:scale-125 cursor-pointer">
                     <ThumbsDown className="w-8 h-8" />
                     <span className="text-base font-bold">12</span>
                   </div>
 
                   {/* comments */}
-                  <div className="flex flex-col items-center text-[#49108B] transition-transform duration-200 hover:scale-125">
+                  <div className="flex flex-col items-center text-[#49108B] transition-transform duration-200 hover:scale-125 cursor-pointer">
                     <MessageSquare className="w-8 h-8" />
                     <span className="text-base font-bold">12</span>
                   </div>
@@ -219,6 +240,20 @@ function MyPosts() {
           </div>
         </div>
       )}
+
+      {/* confrim popup modal */}
+      <ConfirmPopup
+        isOpen={confirmOpen}
+        onConfirm={confrimDelete}
+        onCancel={() => {
+          setConfirmOpen(false);
+        }}
+        title={confirmTitle}
+        message={confirmMessage}
+      />
+
+      {/* info popup modal */}
+      <InfoPopup isOpen={infoOpen} message={infoMessage} onClose={() => setInfoOpen(false)} />
     </div>
   );
 }

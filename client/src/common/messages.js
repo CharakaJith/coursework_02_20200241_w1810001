@@ -12,3 +12,12 @@ export const USER = {
   SESSION_EXP: 'Your session has expired. Please log in again.',
   PASSWORD_CHANGED: 'Your password has been changed. Please log in again.',
 };
+
+// modal messages
+export const MODAL = {
+  DELETE_POST: {
+    TITLE: 'Delete blog post',
+    MESSAGE: 'Are you sure you want to delete this blog post?',
+    SUCCESS: 'Blog post has been deleted successfully.',
+  },
+};

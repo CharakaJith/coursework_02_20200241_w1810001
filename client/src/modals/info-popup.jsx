@@ -1,32 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CircleX } from 'lucide-react';
 
-function InfoPopup({ isOpen, message }) {
-  const [infoVisible, setInfoVisible] = useState(true);
+function InfoPopup({ isOpen, message, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
 
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setInfoVisible(false);
-
-      // remove session message
-      sessionStorage.removeItem('message');
-    }, 1000);
-  };
-
-  // close after 5 seconds
   useEffect(() => {
-    if (isOpen && infoVisible) {
+    if (isOpen) {
       const timer = setTimeout(() => {
         handleClose();
       }, 5000);
 
       return () => clearTimeout(timer);
     }
-  }, [isOpen, infoVisible]);
+  }, [isOpen]);
 
-  if (!isOpen || !infoVisible) return null;
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      if (onClose) onClose();
+
+      // remove session message
+      sessionStorage.removeItem('message');
+    }, 300);
+  };
+
+  if (!isOpen && !isClosing) return null;
 
   return (
     <div
@@ -37,7 +36,7 @@ function InfoPopup({ isOpen, message }) {
       <div className="flex-1 overflow-auto max-h-40 pr-2">
         <p className="text-base leading-relaxed">{message}</p>
       </div>
-      <button onClick={handleClose} className="text-[#94B4C1] hover:text-[#547792] shrink-0 mt-1">
+      <button onClick={handleClose} className="text-[#94B4C1] hover:text-[#547792] shrink-0 mt-1 cursor-pointer">
         <CircleX />
       </button>
     </div>

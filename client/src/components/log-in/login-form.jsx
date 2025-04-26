@@ -142,7 +142,7 @@ function LoginForm({ goToSignup }) {
         {/* log in button */}
         <Button
           type="submit"
-          className="w-full py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="w-full py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer"
         >
           Log In
         </Button>
@@ -157,7 +157,13 @@ function LoginForm({ goToSignup }) {
       </p>
 
       {/* info popup modal */}
-      <InfoPopup isOpen={infoOpen} message={infoMessage} />
+      <InfoPopup
+        isOpen={infoOpen}
+        message={infoMessage}
+        onClose={() => {
+          setInfoOpen(false);
+        }}
+      />
     </div>
   );
 }

@@ -16,7 +16,7 @@ import { USER } from '../../common/messages';
 
 function AppSidebar() {
   const navigate = useNavigate();
-  const location = useLocation(); // Get current route
+  const location = useLocation();
 
   // Helper function to check if a path is active
   const isActive = (path) => {
@@ -116,7 +116,7 @@ function AppSidebar() {
       {/* footer */}
       <SidebarFooter className="flex justify-center border-t border-sidebar-border p-4">
         <SidebarMenu className="w-full flex justify-center">
-          <SidebarMenuButton className="flex items-center gap-2" onClick={handleLogout}>
+          <SidebarMenuButton className="flex items-center gap-2 cursor-pointer" onClick={handleLogout}>
             <LogOut className="w-5 h-5" />
             <span>Log Out</span>
           </SidebarMenuButton>

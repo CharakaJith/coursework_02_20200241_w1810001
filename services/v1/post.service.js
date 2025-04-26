@@ -191,7 +191,7 @@ const postService = {
 
     return {
       success: true,
-      status: STATUS_CODE.GONE,
+      status: STATUS_CODE.OK,
       data: {
         message: RESPONSE.POST.DELETED,
       },
