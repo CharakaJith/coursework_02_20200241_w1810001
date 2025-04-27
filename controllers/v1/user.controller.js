@@ -54,6 +54,23 @@ const userController = {
     }
   },
 
+  getAll: async (req, res, next) => {
+    try {
+      const response = await userService.getAllUsers();
+      const { success, status, data } = response;
+
+      res.status(status).json({
+        success: success,
+        response: {
+          status: status,
+          data: data,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   update: async (req, res, next) => {
     try {
       const { id } = req.user;

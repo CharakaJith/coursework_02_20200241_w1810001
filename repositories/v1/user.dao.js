@@ -13,6 +13,16 @@ const userDao = {
     }
   },
 
+  getAll: async () => {
+    try {
+      return await models.User.findAll({
+        order: [['lastName', 'ASC']],
+      });
+    } catch (error) {
+      throw new CustomError(DAO.FAILED.GET.ALL(ENTITY.USER, error), STATUS_CODE.SERVER_ERROR);
+    }
+  },
+
   getByEmail: async (userEmail) => {
     try {
       return await models.User.findOne({

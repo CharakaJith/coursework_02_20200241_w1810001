@@ -124,6 +124,24 @@ const userService = {
     };
   },
 
+  getAllUsers: async () => {
+    // fetch all users
+    const users = await userDao.getAll();
+
+    // remove passwords
+    for (const user of users) {
+      delete user.dataValues.password;
+    }
+
+    return {
+      success: true,
+      status: STATUS_CODE.OK,
+      data: {
+        users: users,
+      },
+    };
+  },
+
   updateUserDetails: async (data) => {
     const { id, firstName, lastName, phone } = data;
 
