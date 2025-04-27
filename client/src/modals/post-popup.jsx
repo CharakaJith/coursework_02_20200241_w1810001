@@ -14,7 +14,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [visited, setVisited] = useState('');
-  const [country, setCountry] = useState('');
+  const [countryId, setCountryId] = useState('');
   const [countries, setCountries] = useState([]);
 
   const [error, setError] = useState('');
@@ -57,7 +57,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
   // handle country change
   const handleCountryChange = (e) => {
     const countryValue = e.target.value;
-    setCountry(countryValue);
+    setCountryId(countryValue);
 
     if (countryValue) {
       setIsError(false);
@@ -107,16 +107,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
     e.preventDefault();
 
     // validate form fields
-    if (
-      !title ||
-      title.trim().length === 0 ||
-      !content ||
-      content.trim().length === 0 ||
-      !visited ||
-      visited.trim().length === 0 ||
-      !country ||
-      country.trim().length === 0
-    ) {
+    if (!title || title.trim().length === 0 || !content || content.trim().length === 0 || !visited || visited.trim().length === 0) {
       setError([VALIDATE.EMPTY_FIELDS]);
       setIsError(true);
     } else {
@@ -133,7 +124,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
         const createDetails = {
           title: title,
           content: content,
-          countryId: parseInt(country, 10),
+          countryId: parseInt(countryId, 10),
           visitDate: visited ? formatDate(visited) : '',
         };
 
@@ -150,6 +141,49 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
             }
           })
           .catch((error) => {
+            // check access token
+            if (error.response?.data?.response?.status === 401) {
+              sessionStorage.clear();
+              sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+              navigate('/');
+            }
+
+            const responseData = error.response.data.response?.data;
+
+            if (Array.isArray(responseData)) {
+              const messages = responseData.map((err) => err.message).filter(Boolean);
+              setError(messages);
+            } else if (typeof responseData === 'object' && responseData.message) {
+              setError([responseData.message]);
+            }
+
+            setIsError(true);
+          });
+      }
+      // update post
+      else if (mode === POST.TYPE.UPDATE) {
+        const updateDetails = {
+          id: post.id,
+          title: title,
+          content: content,
+          countryId: parseInt(countryId, 10),
+          visitDate: visited ? formatDate(visited) : '',
+        };
+
+        api
+          .put('/api/v1/post', updateDetails, {
+            headers: {
+              Authorization: `"${accessToken}"`,
+            },
+          })
+          .then((res) => {
+            if (res.data.success === true) {
+              onSuccess(POSTS.UPDATED);
+              onClose();
+            }
+          })
+          .catch((error) => {
+            // check access token
             if (error.response?.data?.response?.status === 401) {
               sessionStorage.clear();
               sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
@@ -176,15 +210,15 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
     if (isOpen && post && mode === POST.TYPE.UPDATE) {
       setTitle(post.title || '');
       setContent(post.content || '');
-      setVisited(post.visitDate || '');
-      setCountry(post.Country && post.Country.id ? post.Country.id : '');
+      setVisited(post.visitDate ? post.visitDate.split('T')[0] : '');
+      setCountryId(post.Country ? post.Country.id : '');
     }
     // clear form for new post
     else if (isOpen && mode === POST.TYPE.CREATE) {
       setTitle('');
       setContent('');
       setVisited('');
-      setCountry('');
+      setCountryId('');
     }
   }, [isOpen]);
 
@@ -240,7 +274,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
               className="border border-gray-300 rounded-lg p-2 cursor-pointer w-full"
             />
 
-            <select value={country} onChange={handleCountryChange} className="border border-gray-300 rounded-lg p-2 cursor-pointer">
+            <select value={countryId} onChange={handleCountryChange} className="border border-gray-300 rounded-lg p-2 cursor-pointer">
               <option value="">Select a country</option>
               {countries.map((c) => (
                 <option key={c.id} value={c.id}>

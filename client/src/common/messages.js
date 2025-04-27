@@ -16,6 +16,7 @@ export const USER = {
 // blog post messages
 export const POSTS = {
   CREATED: 'Your blog post is  now live.',
+  UPDATED: 'Blog post has been updated successfully.',
   DELETED: 'Blog post has been deleted successfully.',
 };
 

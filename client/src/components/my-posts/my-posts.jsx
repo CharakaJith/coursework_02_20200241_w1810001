@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import ConfirmPopup from '../../modals/confrim-popup';
-import InfoPopup from '@/modals/info-popup';
+import InfoPopup from '../../modals/info-popup';
+import PostPopup from '../../modals/post-popup';
 import { USER, MODAL, POSTS } from '../../common/messages';
+import { POST } from '../../constants/post.constant';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,6 +22,9 @@ function MyPosts() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmTitle, setConfirmTitle] = useState('');
   const [confirmMessage, setConfirmMessage] = useState('');
+
+  const [postEdit, setPostEdit] = useState({});
+  const [postOpen, setPostOpen] = useState(false);
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
@@ -40,6 +45,12 @@ function MyPosts() {
     if (e.key === 'Enter') {
       handleSearch();
     }
+  };
+
+  // handle update
+  const handleUpdateClick = (post) => {
+    setPostEdit(post);
+    setPostOpen(true);
   };
 
   // handle refresh
@@ -134,6 +145,14 @@ function MyPosts() {
       });
   };
 
+  // update post popup success
+  const onUpdateSuccess = (message) => {
+    setInfoMessage(message);
+    setInfoOpen(true);
+
+    fetchPosts();
+  };
+
   // fetch all blog posts
   useEffect(() => {
     fetchPosts();
@@ -226,7 +245,9 @@ function MyPosts() {
                   {/* edit button */}
                   <button
                     className="bg-[#FFD95F] hover:bg-[#E6B92E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
-                    onClick={handleSearch}
+                    onClick={() => {
+                      handleUpdateClick(post);
+                    }}
                   >
                     <Pencil />
                   </button>
@@ -257,6 +278,17 @@ function MyPosts() {
 
       {/* info popup modal */}
       <InfoPopup isOpen={infoOpen} message={infoMessage} onClose={() => setInfoOpen(false)} />
+
+      {/* edit blog post popup */}
+      <PostPopup
+        isOpen={postOpen}
+        onClose={() => {
+          setPostOpen(false);
+        }}
+        onSuccess={onUpdateSuccess}
+        mode={POST.TYPE.UPDATE}
+        post={postEdit}
+      />
     </div>
   );
 }

@@ -45,8 +45,8 @@ function NavUser() {
     setPostOpen(true);
   };
 
-  // post popup success
-  const onSuccess = (message) => {
+  // create post popup success
+  const onCreateSuccess = (message) => {
     setInfoMessage(message);
     setInfoOpen(true);
   };
@@ -164,7 +164,7 @@ function NavUser() {
         onClose={() => {
           setPostOpen(false);
         }}
-        onSuccess={onSuccess}
+        onSuccess={onCreateSuccess}
       />
 
       {/* info popup modal */}

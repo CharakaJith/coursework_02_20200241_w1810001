@@ -15,7 +15,9 @@ const countryDao = {
 
   getAll: async () => {
     try {
-      return await models.Country.findAll();
+      return await models.Country.findAll({
+        order: [['commonName', 'ASC']],
+      });
     } catch (error) {
       throw new CustomError(DAO.FAILED.GET.ALL(ENTITY.COUNTRY, error), STATUS_CODE.SERVER_ERROR);
     }
