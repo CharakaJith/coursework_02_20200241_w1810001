@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import ConfirmPopup from '../../modals/confrim-popup';
 import InfoPopup from '@/modals/info-popup';
-import { USER, MODAL } from '../../common/messages';
+import { USER, MODAL, POSTS } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -83,7 +83,7 @@ function MyPosts() {
           setConfirmOpen(false);
 
           // set info message
-          setInfoMessage(MODAL.DELETE_POST.SUCCESS);
+          setInfoMessage(POSTS.DELETED);
           setInfoOpen(true);
         }
       })
@@ -184,7 +184,10 @@ function MyPosts() {
                 {/* post display card */}
                 <div className="flex-1 rounded-xl bg-[#ECEBDE] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 transition-transform duration-300 ease-in-out hover:scale-[1.01] cursor-pointer hover:bg-[#D7D3BF]">
                   <div className="flex-1">
-                    <div className="text-lg font-bold mb-1">{post.title}</div>
+                    <div className="text-lg font-bold mb-1">
+                      {post.title}{' '}
+                      <span className="text-sm leading-snug italic">(published on {new Date(post.createdAt).toLocaleDateString('en-GB')})</span>
+                    </div>
                     <div className="text-sm leading-snug">{post.content.slice(0, 150) + '...'}</div>
                   </div>
                 </div>

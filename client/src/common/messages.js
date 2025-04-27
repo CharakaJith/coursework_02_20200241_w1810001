@@ -13,11 +13,16 @@ export const USER = {
   PASSWORD_CHANGED: 'Your password has been changed. Please log in again.',
 };
 
+// blog post messages
+export const POSTS = {
+  CREATED: 'Your blog post is  now live.',
+  DELETED: 'Blog post has been deleted successfully.',
+};
+
 // modal messages
 export const MODAL = {
   DELETE_POST: {
     TITLE: 'Delete blog post',
     MESSAGE: 'Are you sure you want to delete this blog post?',
-    SUCCESS: 'Blog post has been deleted successfully.',
   },
 };

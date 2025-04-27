@@ -29,7 +29,7 @@ function InfoPopup({ isOpen, message, onClose }) {
 
   return (
     <div
-      className={`fixed bottom-4 right-4 bg-[#213448] text-white font-bold text-xl p-4 rounded-lg shadow-lg max-w-md w-full flex items-start gap-3 z-50 
+      className={`fixed bottom-4 right-4 bg-[#213448] text-white font-bold z-[60] text-xl p-4 rounded-lg shadow-lg max-w-md w-full flex items-start gap-3 
       transform transition-all duration-300 ease-in-out 
       ${isClosing ? 'opacity-0 scale-95 translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}
     >
