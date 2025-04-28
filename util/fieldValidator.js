@@ -23,6 +23,17 @@ const fieldValidator = {
     return 1;
   },
 
+  validate_boolean: async (value, param) => {
+    if (typeof value !== 'boolean') {
+      return {
+        fields: param,
+        message: VALIDATE.PARAM.INVALID(param),
+      };
+    }
+
+    return 1;
+  },
+
   validate_email: async (email) => {
     const emailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 

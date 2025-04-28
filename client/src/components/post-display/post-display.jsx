@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCcw, ThumbsUp, ThumbsDown, Reply } from 'lucide-react';
+import { Search, RefreshCcw, ThumbsUp, ThumbsDown, Reply, MessageSquare } from 'lucide-react';
 import { USER } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -15,6 +15,7 @@ function PostDisplay() {
   const [search, setSearch] = useState('');
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [comments, setComments] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
 
   const navigate = useNavigate();
 
@@ -46,6 +47,7 @@ function PostDisplay() {
   // handle refresh
   const handleRefresh = () => {
     setSearch('');
+    setComments({});
     fetchPosts();
 
     handleGoToTop();
@@ -57,6 +59,46 @@ function PostDisplay() {
       top: 0,
       behavior: 'smooth',
     });
+  };
+
+  // handel comment
+  const handleComment = () => {
+    // validate access token
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      sessionStorage.setItem('message', USER.SESSION_EXP);
+      navigate('/');
+
+      return;
+    }
+
+    const commentDetails = {
+      postId: Object.keys(comments)[0],
+      content: Object.values(comments)[0],
+    };
+
+    api
+      .post('/api/v1/comment', commentDetails, {
+        headers: {
+          Authorization: `"${accessToken}"`,
+        },
+      })
+      .then((res) => {
+        if (res.data.success === true) {
+          handleRefresh();
+        }
+      })
+      .catch((error) => {
+        // check if access token expire
+        if (error.response.data.response.status === 401) {
+          sessionStorage.clear();
+
+          sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+          navigate('/');
+
+          return;
+        }
+      });
   };
 
   // fetch blog posts
@@ -95,6 +137,23 @@ function PostDisplay() {
         }
       });
   };
+
+  useEffect(() => {
+    // get logged in user
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (user) {
+      setCurrentUser(user);
+    } else {
+      sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+      navigate('/');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (currentUser.id) {
+      fetchPosts();
+    }
+  }, [currentUser]);
 
   // fetch all blog posts
   useEffect(() => {
@@ -159,32 +218,61 @@ function PostDisplay() {
 
                 <hr className="mx-0 my-2 border-t border-[#8C96A0] mt-4" />
 
-                {/* action buttons and comment*/}
-                <div className="flex items-center gap-4 mt-4">
-                  {/* like */}
-                  <button className="bg-[#76A55E] hover:bg-[#5F8F4E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
-                    <ThumbsUp />
-                  </button>
+                {/* post status */}
+                <div className="flex items-center gap-8 mt-4 justify-end">
+                  <div className="flex flex-col items-center text-xs">
+                    <ThumbsUp className="w-4 h-4" />
+                    <p className="mt-1">12 Likes</p>
+                  </div>
 
-                  {/* dislike */}
-                  <button className="bg-[#D77D72] hover:bg-[#B86A5C] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
-                    <ThumbsDown />
-                  </button>
+                  <div className="flex flex-col items-center text-xs">
+                    <ThumbsDown className="w-4 h-4" />
+                    <p className="mt-1">12 Dislikes</p>
+                  </div>
 
-                  {/* comment input */}
-                  <input
-                    type="text"
-                    value={comments[post.id] || ''}
-                    onChange={(e) => handleCommentOnChange(post.id, e)}
-                    placeholder="Share your thoughts....."
-                    className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#94B4C1] text-black"
-                  />
-
-                  {/* comment post */}
-                  <button className="bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
-                    <Reply />
-                  </button>
+                  <div className="flex flex-col items-center text-xs">
+                    <MessageSquare className="w-4 h-4" />
+                    <p className="mt-1">
+                      {post.Comments.length} {post.Comments.length === 1 ? ' Comment' : ' Comments'}
+                    </p>
+                  </div>
                 </div>
+
+                {/* action buttons and comment*/}
+                {post.userId !== currentUser.id ? (
+                  <>
+                    <div className="flex items-center gap-4 mt-4">
+                      {/* like button */}
+                      <button className="bg-[#76A55E] hover:bg-[#5F8F4E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
+                        <ThumbsUp />
+                      </button>
+
+                      {/* dislike button */}
+                      <button className="bg-[#D77D72] hover:bg-[#B86A5C] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
+                        <ThumbsDown />
+                      </button>
+
+                      {/* comment input box */}
+                      <input
+                        type="text"
+                        value={comments[post.id] || ''}
+                        onChange={(e) => handleCommentOnChange(post.id, e)}
+                        placeholder="Share your thoughts....."
+                        className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#94B4C1] text-black"
+                      />
+
+                      {/* comment button */}
+                      <button
+                        onClick={handleComment}
+                        className="bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                      >
+                        <Reply />
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             ))}
 

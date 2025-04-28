@@ -28,7 +28,7 @@ module.exports = {
       DELETED: 'Post has been permanently deleted.',
     },
     ACTION: {
-      DENIED: 'Action not permitted',
+      DENIED: 'Action not permitted.',
     },
   },
 

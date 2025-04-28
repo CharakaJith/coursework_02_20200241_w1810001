@@ -241,7 +241,7 @@ function MyPosts() {
                   {/* comments */}
                   <div className="flex flex-col items-center text-[#49108B] transition-transform duration-200 hover:scale-125 cursor-pointer">
                     <MessageSquare className="w-8 h-8" />
-                    <span className="text-base font-bold">12</span>
+                    <span className="text-base font-bold">{post.Comments.length}</span>
                   </div>
                 </div>
 

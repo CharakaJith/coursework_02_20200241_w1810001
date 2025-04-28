@@ -2,18 +2,18 @@ const logger = require('../../middleware/log/logger');
 const CustomError = require('../../util/customError');
 const fieldValidator = require('../../util/fieldValidator');
 const postDao = require('../../repositories/v1/post.dao');
-const commentDao = require('../../repositories/v1/comment.dao');
+const reactDao = require('../../repositories/v1/react.dao');
 const { LOG_TYPE } = require('../../constants/logger.constants');
 const { STATUS_CODE } = require('../../constants/app.constants');
 const { RESPONSE } = require('../../common/messages');
 
-const commentService = {
-  postNewComment: async (data) => {
-    const { userId, postId, content } = data;
+const reactService = {
+  newPostReact: async (data) => {
+    const { userId, postId, isLike } = data;
 
     // validate user details
     const errorArray = [];
-    errorArray.push(await fieldValidator.validate_string(content, 'content'));
+    errorArray.push(await fieldValidator.validate_boolean(isLike, 'isLike'));
     errorArray.push(await fieldValidator.validate_number(postId, 'postId'));
 
     // check request data
@@ -37,22 +37,22 @@ const commentService = {
       throw new CustomError(RESPONSE.ACTION.DENIED, STATUS_CODE.FORBIDDON);
     }
 
-    // create new comment
-    const commentDetails = {
+    // create a new react
+    const reactDetails = {
       postId: postId,
       userId: userId,
-      content: content,
+      isLike: isLike,
     };
-    const newComment = await commentDao.insert(commentDetails);
+    const newReact = await reactDao.insert(reactDetails);
 
     return {
       success: true,
       status: STATUS_CODE.CREATED,
       data: {
-        comment: newComment,
+        react: newReact,
       },
     };
   },
 };
 
-module.exports = commentService;
+module.exports = reactService;
