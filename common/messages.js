@@ -27,6 +27,9 @@ module.exports = {
       NOT_FOUND: 'Post not found.',
       DELETED: 'Post has been permanently deleted.',
     },
+    ACTION: {
+      DENIED: 'Action not permitted',
+    },
   },
 
   // validation error messages
