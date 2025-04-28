@@ -16,7 +16,20 @@ const userDao = {
   getAll: async () => {
     try {
       return await models.User.findAll({
+        where: {
+          isActive: true,
+        },
         order: [['lastName', 'ASC']],
+        include: [
+          {
+            model: models.Post,
+            include: [
+              {
+                model: models.Like,
+              },
+            ],
+          },
+        ],
       });
     } catch (error) {
       throw new CustomError(DAO.FAILED.GET.ALL(ENTITY.USER, error), STATUS_CODE.SERVER_ERROR);

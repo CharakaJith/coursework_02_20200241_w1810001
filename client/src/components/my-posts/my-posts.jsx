@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
+import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare, Plus } from 'lucide-react';
 import ConfirmPopup from '../../modals/confrim-popup';
 import InfoPopup from '../../modals/info-popup';
 import PostPopup from '../../modals/post-popup';
@@ -23,6 +23,7 @@ function MyPosts() {
   const [confirmTitle, setConfirmTitle] = useState('');
   const [confirmMessage, setConfirmMessage] = useState('');
 
+  const [postType, setPostType] = useState('');
   const [postEdit, setPostEdit] = useState({});
   const [postOpen, setPostOpen] = useState(false);
 
@@ -49,7 +50,14 @@ function MyPosts() {
 
   // handle update
   const handleUpdateClick = (post) => {
+    setPostType(POST.TYPE.UPDATE);
     setPostEdit(post);
+    setPostOpen(true);
+  };
+
+  // handle create
+  const handleCreateClick = () => {
+    setPostType(POST.TYPE.CREATE);
     setPostOpen(true);
   };
 
@@ -101,7 +109,6 @@ function MyPosts() {
       .catch((error) => {
         // check if access token expire
         if (error.response.data.response.status === 401) {
-          sessionStorage.clear();
           sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
           navigate('/');
           return;
@@ -135,8 +142,6 @@ function MyPosts() {
       .catch((error) => {
         // check if access token expire
         if (error.response.data.response.status === 401) {
-          sessionStorage.clear();
-
           sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
           navigate('/');
 
@@ -146,7 +151,7 @@ function MyPosts() {
   };
 
   // update post popup success
-  const onUpdateSuccess = (message) => {
+  const onSuccess = (message) => {
     setInfoMessage(message);
     setInfoOpen(true);
 
@@ -189,6 +194,14 @@ function MyPosts() {
             onClick={handleRefresh}
           >
             <RefreshCcw />
+          </button>
+
+          {/* create button */}
+          <button
+            className="bg-[#F1C40F] hover:bg-[#D4A20D] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+            onClick={handleCreateClick}
+          >
+            <Plus />
           </button>
         </div>
       </div>
@@ -285,9 +298,9 @@ function MyPosts() {
         onClose={() => {
           setPostOpen(false);
         }}
-        onSuccess={onUpdateSuccess}
-        mode={POST.TYPE.UPDATE}
-        post={postEdit}
+        onSuccess={onSuccess}
+        mode={postType}
+        post={postType === POST.TYPE.UPDATE ? postEdit : {}}
       />
     </div>
   );

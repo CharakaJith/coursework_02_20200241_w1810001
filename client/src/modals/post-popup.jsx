@@ -95,7 +95,6 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
       })
       .catch((error) => {
         if (error.response?.data?.response?.status === 401) {
-          sessionStorage.clear();
           sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
           navigate('/');
         }
@@ -143,7 +142,6 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
           .catch((error) => {
             // check access token
             if (error.response?.data?.response?.status === 401) {
-              sessionStorage.clear();
               sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
               navigate('/');
             }
@@ -185,7 +183,6 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
           .catch((error) => {
             // check access token
             if (error.response?.data?.response?.status === 401) {
-              sessionStorage.clear();
               sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
               navigate('/');
             }

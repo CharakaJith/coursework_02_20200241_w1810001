@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'; // Add useLocation
-import { LogOut, Home, Info, Phone } from 'lucide-react';
+import { LogOut, Home, Info, Phone, Users } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +26,11 @@ function AppSidebar() {
   // go to home
   const handleHomeClick = () => {
     navigate('/home');
+  };
+
+  // go to community
+  const handleCommunityClick = () => {
+    navigate('/community');
   };
 
   // go to about
@@ -77,6 +82,19 @@ function AppSidebar() {
 
               <SidebarMenuItem>
                 <div className="flex items-center gap-2 ml-5 mr-1">
+                  <Users />
+                  <SidebarMenuButton
+                    onClick={handleCommunityClick}
+                    className={`hover:bg-[#4A628A] hover:text-white cursor-pointer ${isActive('/community') ? 'bg-[#4A628A] text-white' : ''}`}
+                  >
+                    Community
+                  </SidebarMenuButton>
+                </div>
+              </SidebarMenuItem>
+              <SidebarSeparator className="mx-0" />
+
+              <SidebarMenuItem>
+                <div className="flex items-center gap-2 ml-5 mr-1">
                   <Info />
                   <SidebarMenuButton
                     onClick={handleAboutClick}
@@ -108,7 +126,7 @@ function AppSidebar() {
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center">
             <img src={map} alt="Sidebar Illustration" className="w-50 h-50 object-cover" />
-            <p className="mt-2 text-sm text-center font-bold">A Global Journey Through Stories</p>
+            <p className="mt-2 text-sm text-center font-bold">Travel-Tales</p>
           </div>
         </div>
       </div>

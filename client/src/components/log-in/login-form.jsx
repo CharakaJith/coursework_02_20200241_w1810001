@@ -70,6 +70,10 @@ function LoginForm({ goToSignup }) {
               sessionStorage.setItem('user', JSON.stringify(res.data.response.data.user));
             }
 
+            // set user
+            const user = res.data.response.data.user;
+            sessionStorage.setItem('user', JSON.stringify(user));
+
             navigate('/home');
           }
         })

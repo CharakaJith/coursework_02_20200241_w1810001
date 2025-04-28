@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage/HomePage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import ContactPage from './pages/ContactPage/ContactPage';
 import MyPostPage from './pages/MyPostPage/MyPostPage';
+import CommunityPage from './pages/CommunityPage/CommunityPage';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/about" element={<AboutPage />} />
         <Route exact path="/contact" element={<ContactPage />} />
         <Route exact path="/posts" element={<MyPostPage />} />
+        <Route exact path="/community" element={<CommunityPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
