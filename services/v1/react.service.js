@@ -37,6 +37,35 @@ const reactService = {
       throw new CustomError(RESPONSE.ACTION.DENIED, STATUS_CODE.FORBIDDON);
     }
 
+    // check if already reacted
+    const reacts = await reactDao.getByPost(postId, userId);
+    const alreadyReacted = reacts.some((react) => react.isLike === isLike);
+
+    if (alreadyReacted) {
+      throw new CustomError(isLike ? RESPONSE.REACT.LIKED : RESPONSE.REACT.DILIKED, STATUS_CODE.BAD_REQUEST);
+    }
+
+    // check for opposite reaction
+    const existingOppositeReact = reacts.find((react) => react.isLike !== isLike);
+    if (existingOppositeReact) {
+      const existingReactDetails = {
+        id: existingOppositeReact.id,
+        userId: existingOppositeReact.userId,
+        postId: existingOppositeReact.postId,
+        isLike: isLike,
+      };
+
+      const updatedReact = await reactDao.update(existingReactDetails);
+
+      return {
+        success: true,
+        status: STATUS_CODE.CREATED,
+        data: {
+          react: updatedReact,
+        },
+      };
+    }
+
     // create a new react
     const reactDetails = {
       postId: postId,

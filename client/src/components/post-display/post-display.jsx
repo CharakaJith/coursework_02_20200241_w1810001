@@ -2,7 +2,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, ThumbsUp, ThumbsDown, Reply, MessageSquare } from 'lucide-react';
-import { USER } from '../../common/messages';
+import InfoPopup from '@/modals/info-popup';
+import { COMMENT, REACT, USER } from '../../common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,6 +17,9 @@ function PostDisplay() {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [comments, setComments] = useState({});
   const [currentUser, setCurrentUser] = useState({});
+
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -49,8 +53,6 @@ function PostDisplay() {
     setSearch('');
     setComments({});
     fetchPosts();
-
-    handleGoToTop();
   };
 
   // handle go to top
@@ -59,6 +61,55 @@ function PostDisplay() {
       top: 0,
       behavior: 'smooth',
     });
+  };
+
+  // handle react
+  const handleReact = (id, react) => {
+    // validate access token
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      sessionStorage.setItem('message', USER.SESSION_EXP);
+      navigate('/');
+
+      return;
+    }
+
+    const reactDetails = {
+      postId: id,
+      isLike: react,
+    };
+
+    api
+      .post('/api/v1/react', reactDetails, {
+        headers: {
+          Authorization: `"${accessToken}"`,
+        },
+      })
+      .then((res) => {
+        if (res.data.success === true) {
+          // open info modal
+          setInfoMessage(react ? REACT.LIKE : REACT.DISLIKE);
+          setInfoOpen(true);
+
+          handleRefresh();
+        }
+      })
+      .catch((error) => {
+        // check if access token expire
+        if (error.response.data.response.status === 401) {
+          sessionStorage.clear();
+
+          sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+          navigate('/');
+
+          return;
+        }
+
+        if (error.response.data.response.status === 400) {
+          setInfoMessage(error.response.data.response.data.message);
+          setInfoOpen(true);
+        }
+      });
   };
 
   // handel comment
@@ -77,28 +128,38 @@ function PostDisplay() {
       content: Object.values(comments)[0],
     };
 
-    api
-      .post('/api/v1/comment', commentDetails, {
-        headers: {
-          Authorization: `"${accessToken}"`,
-        },
-      })
-      .then((res) => {
-        if (res.data.success === true) {
-          handleRefresh();
-        }
-      })
-      .catch((error) => {
-        // check if access token expire
-        if (error.response.data.response.status === 401) {
-          sessionStorage.clear();
+    // validate details
+    if (!commentDetails.postId || !commentDetails.content) {
+      setInfoMessage(COMMENT.EMPTY);
+      setInfoOpen(true);
+    } else {
+      api
+        .post('/api/v1/comment', commentDetails, {
+          headers: {
+            Authorization: `"${accessToken}"`,
+          },
+        })
+        .then((res) => {
+          if (res.data.success === true) {
+            // open info modal
+            setInfoMessage(COMMENT.POSTED);
+            setInfoOpen(true);
 
-          sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
-          navigate('/');
+            handleRefresh();
+          }
+        })
+        .catch((error) => {
+          // check if access token expire
+          if (error.response.data.response.status === 401) {
+            sessionStorage.clear();
 
-          return;
-        }
-      });
+            sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+            navigate('/');
+
+            return;
+          }
+        });
+    }
   };
 
   // fetch blog posts
@@ -222,12 +283,12 @@ function PostDisplay() {
                 <div className="flex items-center gap-8 mt-4 justify-end">
                   <div className="flex flex-col items-center text-xs">
                     <ThumbsUp className="w-4 h-4" />
-                    <p className="mt-1">12 Likes</p>
+                    <p className="mt-1">{post.Likes.filter((like) => like.isLike === true).length} Likes</p>
                   </div>
 
                   <div className="flex flex-col items-center text-xs">
                     <ThumbsDown className="w-4 h-4" />
-                    <p className="mt-1">12 Dislikes</p>
+                    <p className="mt-1">{post.Likes.filter((like) => like.isLike === false).length} Dislikes</p>
                   </div>
 
                   <div className="flex flex-col items-center text-xs">
@@ -243,12 +304,22 @@ function PostDisplay() {
                   <>
                     <div className="flex items-center gap-4 mt-4">
                       {/* like button */}
-                      <button className="bg-[#76A55E] hover:bg-[#5F8F4E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
+                      <button
+                        onClick={() => {
+                          handleReact(post.id, true);
+                        }}
+                        className="bg-[#76A55E] hover:bg-[#5F8F4E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                      >
                         <ThumbsUp />
                       </button>
 
                       {/* dislike button */}
-                      <button className="bg-[#D77D72] hover:bg-[#B86A5C] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200">
+                      <button
+                        onClick={() => {
+                          handleReact(post.id, false);
+                        }}
+                        className="bg-[#D77D72] hover:bg-[#B86A5C] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                      >
                         <ThumbsDown />
                       </button>
 
@@ -293,6 +364,9 @@ function PostDisplay() {
           </div>
         </div>
       )}
+
+      {/* info popup modal */}
+      <InfoPopup isOpen={infoOpen} message={infoMessage} onClose={() => setInfoOpen(false)} />
     </div>
   );
 }

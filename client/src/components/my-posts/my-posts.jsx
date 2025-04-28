@@ -229,13 +229,13 @@ function MyPosts() {
                   {/* likes */}
                   <div className="flex flex-col items-center text-[#007F73] transition-transform duration-200 hover:scale-125 cursor-pointer">
                     <ThumbsUp className="w-8 h-8" />
-                    <span className="text-base font-bold">12</span>
+                    <span className="text-base font-bold">{post.Likes.filter((like) => like.isLike === true).length}</span>
                   </div>
 
                   {/* dislikes */}
                   <div className="flex flex-col items-center text-[#BE3D2A] transition-transform duration-200 hover:scale-125 cursor-pointer">
                     <ThumbsDown className="w-8 h-8" />
-                    <span className="text-base font-bold">12</span>
+                    <span className="text-base font-bold">{post.Likes.filter((like) => like.isLike === false).length}</span>
                   </div>
 
                   {/* comments */}

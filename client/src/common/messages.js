@@ -15,9 +15,21 @@ export const USER = {
 
 // blog post messages
 export const POSTS = {
-  CREATED: 'Your blog post is  now live.',
+  CREATED: 'Your blog post is now live.',
   UPDATED: 'Blog post has been updated successfully.',
   DELETED: 'Blog post has been deleted successfully.',
+};
+
+// comment messages
+export const COMMENT = {
+  EMPTY: 'Comment content cannot be empty.',
+  POSTED: 'Your comment has been posted.',
+};
+
+// like messages
+export const REACT = {
+  LIKE: 'You liked the post.',
+  DISLIKE: 'You disliked the post.',
 };
 
 // modal messages
