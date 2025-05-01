@@ -10,9 +10,9 @@ import {
   SidebarSeparator,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import map from '../../assets/animations/map.gif';
+import map from '@/assets/animations/map.gif';
 import NavUser from '../nav-user/nav-user';
-import { USER } from '../../common/messages';
+import { USER } from '@/common/messages';
 
 function AppSidebar() {
   const navigate = useNavigate();

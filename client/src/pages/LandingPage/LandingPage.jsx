@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import map from '../../assets/animations/map.gif';
+import map from '@/assets/animations/map.gif';
 import SignUpForm from '@/components/sign-up/signup-form';
 import LoginForm from '@/components/log-in/login-form';
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AppSidebar from '../../components/app-sidebar/app-sidebar';
+import AppSidebar from '@/components/app-sidebar/app-sidebar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import CommunityDisplay from '../../components/community-display/community-display';
-import { USER } from '../../common/messages';
+import CommunityDisplay from '@/components/community-display/community-display';
+import { USER } from '@/common/messages';
 
 function CommunityPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

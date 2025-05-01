@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { CircleX } from 'lucide-react';
-import { POST } from '../constants/post.constant';
-import { POSTS, USER, VALIDATE } from '../common/messages';
+import { POST } from '@/constants/post.constant';
+import { POSTS, USER, VALIDATE } from '@/common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 

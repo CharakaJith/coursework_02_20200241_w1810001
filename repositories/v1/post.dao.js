@@ -18,6 +18,9 @@ const postDao = {
       return await models.Post.findAll({
         include: [
           {
+            model: models.User,
+          },
+          {
             model: models.Country,
             include: [
               {
@@ -28,10 +31,22 @@ const postDao = {
           },
           {
             model: models.Like,
+            include: [
+              {
+                model: models.User,
+                attributes: { exclude: ['password'] },
+              },
+            ],
             attributes: { exclude: ['postId'] },
           },
           {
             model: models.Comment,
+            include: [
+              {
+                model: models.User,
+                attributes: { exclude: ['password'] },
+              },
+            ],
             attributes: { exclude: ['postId'] },
           },
         ],
@@ -61,10 +76,22 @@ const postDao = {
           },
           {
             model: models.Like,
+            include: [
+              {
+                model: models.User,
+                attributes: { exclude: ['password'] },
+              },
+            ],
             attributes: { exclude: ['postId'] },
           },
           {
             model: models.Comment,
+            include: [
+              {
+                model: models.User,
+                attributes: { exclude: ['password'] },
+              },
+            ],
             attributes: { exclude: ['postId'] },
           },
         ],

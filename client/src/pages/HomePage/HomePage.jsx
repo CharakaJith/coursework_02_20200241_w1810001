@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import AppSidebar from '../../components/app-sidebar/app-sidebar';
-import PostDisplay from '../..//components/post-display/post-display';
-import { USER } from '../../common/messages';
+import AppSidebar from '@/components/app-sidebar/app-sidebar';
+import PostDisplay from '@/components/post-display/post-display';
+import { USER } from '@/common/messages';
 
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,7 +39,7 @@ function HomePage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-3xl font-bold">Recent Posts</BreadcrumbPage>
+                <BreadcrumbPage className="text-3xl font-bold">Recent Blog Posts</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

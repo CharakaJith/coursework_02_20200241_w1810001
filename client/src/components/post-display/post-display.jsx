@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, ThumbsUp, ThumbsDown, Reply, MessageSquare } from 'lucide-react';
 import InfoPopup from '@/modals/info-popup';
-import { COMMENT, REACT, USER } from '../../common/messages';
+import { COMMENT, REACT, USER } from '@/common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -55,6 +55,11 @@ function PostDisplay() {
     fetchPosts();
   };
 
+  // handle post click
+  const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`);
+  };
+
   // handle go to top
   const handleGoToTop = () => {
     window.scrollTo({
@@ -99,7 +104,7 @@ function PostDisplay() {
         if (error.response.data.response.status === 401) {
           sessionStorage.clear();
 
-          sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+          sessionStorage.setItem('message', USER.SESSION_EXP);
           navigate('/');
 
           return;
@@ -153,7 +158,7 @@ function PostDisplay() {
           if (error.response.data.response.status === 401) {
             sessionStorage.clear();
 
-            sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+            sessionStorage.setItem('message', USER.SESSION_EXP);
             navigate('/');
 
             return;
@@ -191,7 +196,7 @@ function PostDisplay() {
         if (error.response.data.response.status === 401) {
           sessionStorage.clear();
 
-          sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+          sessionStorage.setItem('message', USER.SESSION_EXP);
           navigate('/');
 
           return;
@@ -205,7 +210,7 @@ function PostDisplay() {
     if (user) {
       setCurrentUser(user);
     } else {
-      sessionStorage.setItem('signupMessage', USER.SESSION_EXP);
+      sessionStorage.setItem('message', USER.SESSION_EXP);
       navigate('/');
     }
   }, [navigate]);
@@ -224,7 +229,7 @@ function PostDisplay() {
   return (
     <div>
       {/* search area */}
-      <div className="sticky top-0 bg-white z-10 flex flex-1 flex-col pt-4 pl-4 pr-4">
+      <div className="sticky top-0 bg-white flex flex-1 flex-col pt-4 pl-4 pr-4">
         <div className="w-full max-w-full min-h-12 flex items-center gap-2">
           {/* search bar */}
           <input
@@ -260,16 +265,27 @@ function PostDisplay() {
       {filteredPosts.length !== 0 ? (
         // post blocks
         <div className="flex flex-1 flex-col items-center p-4">
-          <div className="flex flex-col gap-6 w-full max-w-2xl">
+          <div className="flex flex-col gap-6 w-full max-w-3xl">
             {filteredPosts.map((post, i) => (
               <div
                 key={post.id || i}
-                className="rounded-xl bg-[#ECEBDE] flex flex-col p-6 transition-transform duration-300 ease-in-out hover:scale-[1.02] cursor-pointer hover:bg-[#D7D3BF] shadow-md"
+                onClick={() => {
+                  handlePostClick(post.id);
+                }}
+                className="rounded-xl bg-[#F9F9F6] flex flex-col p-6 hover:bg-[#E0E0DC] shadow-md cursor-pointer"
               >
                 {/* title and flag */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="text-2xl font-bold leading-tight">{post.title}</div>
-                  <img src={post.Country.flagUrl} alt="Country Flag" className="w-12 h-12 object-contain rounded-xl" />
+                  <div>
+                    <div className="text-2xl font-bold leading-tight">{post.title}</div>
+                    <div className="text-sm leading-tight mt-2 italic">
+                      posted by{' '}
+                      <span className="">
+                        {post.User.firstName} {post.User.lastName}
+                      </span>
+                    </div>
+                  </div>
+                  <img src={post.Country.flagUrl} alt="Country Flag" className="w-12 h-12 object-contain rounded-2xl" />
                 </div>
 
                 <hr className="mx-0 my-2 border-t border-[#1a2533]" />
@@ -305,20 +321,22 @@ function PostDisplay() {
                     <div className="flex items-center gap-4 mt-4">
                       {/* like button */}
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleReact(post.id, true);
                         }}
-                        className="bg-[#76A55E] hover:bg-[#5F8F4E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                        className="bg-green-600 hover:bg-green-700 cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
                       >
                         <ThumbsUp />
                       </button>
 
                       {/* dislike button */}
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleReact(post.id, false);
                         }}
-                        className="bg-[#D77D72] hover:bg-[#B86A5C] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
+                        className="bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
                       >
                         <ThumbsDown />
                       </button>
@@ -327,6 +345,7 @@ function PostDisplay() {
                       <input
                         type="text"
                         value={comments[post.id] || ''}
+                        onClick={(e) => e.stopPropagation()}
                         onChange={(e) => handleCommentOnChange(post.id, e)}
                         placeholder="Share your thoughts....."
                         className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#94B4C1] text-black"
@@ -334,7 +353,10 @@ function PostDisplay() {
 
                       {/* comment button */}
                       <button
-                        onClick={handleComment}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleComment();
+                        }}
                         className="bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
                       >
                         <Reply />

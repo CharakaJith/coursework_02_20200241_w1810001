@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare, Plus, User } from 'lucide-react';
+import { Search, RefreshCcw, ThumbsUp, MessageSquare, Plus } from 'lucide-react';
 
-import { USER } from '../../common/messages';
+import { USER } from '@/common/messages';
 
-import Profile from '../../assets/images/profile.png';
+import Profile from '@/assets/images/profile.png';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -97,7 +97,7 @@ function CommunityDisplay() {
   return (
     <div>
       {/* search area */}
-      <div className="flex flex-1 flex-col pt-4 pl-4 pr-4">
+      <div className="sticky top-0 bg-white flex flex-1 flex-col pt-4 pl-4 pr-4">
         <div className="w-full max-w-full min-h-12 flex items-center gap-2">
           {/* search bar */}
           <input
@@ -135,10 +135,7 @@ function CommunityDisplay() {
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-4">
             {users.map((user, i) => (
-              <div
-                key={user.id || i}
-                className="rounded-xl bg-[#ECEBDE] flex flex-col items-center p-4 transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer hover:bg-[#D7D3BF]"
-              >
+              <div key={user.id || i} className="rounded-xl bg-[#ECEBDE] flex flex-col items-center p-4 hover:bg-[#D7D3BF]">
                 {/* profile picture */}
                 <div className="w-40 h-40 rounded-full overflow-hidden">
                   <img src={Profile} alt="Profile" className="w-full h-full object-cover" />
@@ -168,7 +165,7 @@ function CommunityDisplay() {
                   {/* total likes */}
                   <div className="flex flex-col items-center">
                     <ThumbsUp size={27} />
-                    <span className="text-xs mt-1">{user.likesCount || 0} Likes</span>
+                    <span className="text-xs mt-1">{user.Likes?.length} Likes</span>
                   </div>
                 </div>
               </div>

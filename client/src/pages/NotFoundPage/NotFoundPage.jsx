@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import notFound from '../../assets/images/not-found.jpg';
+import notFound from '@/assets/images/not-found.jpg';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 

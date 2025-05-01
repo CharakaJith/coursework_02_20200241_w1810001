@@ -12,9 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import PostPopup from '../../modals/post-popup';
-import InfoPopup from '../../modals/info-popup';
-import { USER } from '../../common/messages';
+import PostPopup from '@/modals/post-popup';
+import InfoPopup from '@/modals/info-popup';
+import { USER } from '@/common/messages';
 
 function NavUser() {
   const [user, setUser] = useState({});

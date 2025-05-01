@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { VALIDATE, USER } from '../../common/messages';
+import { VALIDATE, USER } from '@/common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 

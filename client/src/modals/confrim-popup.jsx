@@ -15,7 +15,7 @@ function ConfirmPopup({ isOpen, onConfirm, onCancel, title, message }) {
           {/* cancel button */}
           <button
             onClick={onCancel}
-            className="px-5 py-2 rounded-full bg-[#2ABE3D] text-gray-700 hover:bg-[#1E952E] font-semibold transition duration-200 cursor-pointer"
+            className="px-5 py-2 rounded-full text-white bg-green-600 hover:bg-green-700 font-semibold transition duration-200 cursor-pointer"
           >
             Cancel
           </button>
@@ -23,7 +23,7 @@ function ConfirmPopup({ isOpen, onConfirm, onCancel, title, message }) {
           {/* confirm button */}
           <button
             onClick={onConfirm}
-            className="px-5 py-2 rounded-full bg-[#BE3D2A] text-white hover:bg-[#952E1E] font-semibold transition duration-200 cursor-pointer"
+            className="px-5 py-2 rounded-full text-white bg-[#BE3D2A] hover:bg-[#952E1E] font-semibold transition duration-200 cursor-pointer"
           >
             Confirm
           </button>

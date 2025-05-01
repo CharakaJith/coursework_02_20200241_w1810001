@@ -2,11 +2,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, Trash, Pencil, ThumbsUp, ThumbsDown, MessageSquare, Plus } from 'lucide-react';
-import ConfirmPopup from '../../modals/confrim-popup';
-import InfoPopup from '../../modals/info-popup';
-import PostPopup from '../../modals/post-popup';
-import { USER, MODAL, POSTS } from '../../common/messages';
-import { POST } from '../../constants/post.constant';
+import ConfirmPopup from '@/modals/confrim-popup';
+import InfoPopup from '@/modals/info-popup';
+import PostPopup from '@/modals/post-popup';
+import { USER, MODAL, POSTS } from '@/common/messages';
+import { POST } from '@/constants/post.constant';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -46,6 +46,11 @@ function MyPosts() {
     if (e.key === 'Enter') {
       handleSearch();
     }
+  };
+
+  // handle post click
+  const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`);
   };
 
   // handle update
@@ -166,7 +171,7 @@ function MyPosts() {
   return (
     <div>
       {/* search area */}
-      <div className="flex flex-1 flex-col pt-4 pl-4 pr-4">
+      <div className="sticky top-0 bg-white flex flex-1 flex-col pt-4 pl-4 pr-4">
         <div className="w-full max-w-full min-h-12 flex items-center gap-2">
           {/* search bar */}
           <input
@@ -214,7 +219,12 @@ function MyPosts() {
             {posts.map((post, i) => (
               <div key={post.id || i} className="flex items-center justify-between gap-4">
                 {/* post display card */}
-                <div className="flex-1 rounded-xl bg-[#ECEBDE] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 transition-transform duration-300 ease-in-out hover:scale-[1.01] cursor-pointer hover:bg-[#D7D3BF]">
+                <div
+                  onClick={() => {
+                    handlePostClick(post.id);
+                  }}
+                  className="flex-1 rounded-xl bg-[#ECEBDE] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#D7D3BF]"
+                >
                   <div className="flex-1">
                     <div className="text-lg font-bold mb-1">
                       {post.title}{' '}

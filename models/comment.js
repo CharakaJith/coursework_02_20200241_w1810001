@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // single comment belongs to a single post
-      Comment.belongsTo(models.User, {
+      Comment.belongsTo(models.Post, {
         foreignKey: 'postId',
       });
     }

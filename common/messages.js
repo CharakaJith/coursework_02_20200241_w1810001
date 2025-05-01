@@ -28,8 +28,8 @@ module.exports = {
       DELETED: 'Post has been permanently deleted.',
     },
     REACT: {
-      LIKED: 'You already liked this post',
-      DILIKED: 'You already disliked this post',
+      LIKED: 'You already liked this post.',
+      DILIKED: 'You already disliked this post.',
     },
     ACTION: {
       DENIED: 'Action not permitted.',

@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import AppSidebar from '../../components/app-sidebar/app-sidebar';
+import AppSidebar from '@/components/app-sidebar/app-sidebar';
 import MyPosts from '@/components/my-posts/my-posts';
-import { USER } from '../../common/messages';
+import { USER } from '@/common/messages';
 
 function MyPostPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

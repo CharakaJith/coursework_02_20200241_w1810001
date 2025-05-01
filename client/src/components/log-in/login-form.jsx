@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import InfoPopup from '../..//modals/info-popup';
-import { VALIDATE } from '../../common/messages';
+import InfoPopup from '@/modals/info-popup';
+import { VALIDATE } from '@/common/messages';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
