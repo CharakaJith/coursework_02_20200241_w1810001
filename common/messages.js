@@ -17,6 +17,7 @@ module.exports = {
       NOT_FOUND: 'User not found.',
       DEACTIVATED: 'User profile has been permanently deleted.',
       PWD_UPDATED: 'Password updated successfully.',
+      FOLLOWS: 'Already following this user.',
     },
     COUNTRY: {
       INVALID: 'The country does not exist.',

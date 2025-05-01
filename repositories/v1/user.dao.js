@@ -51,7 +51,22 @@ const userDao = {
 
   getById: async (userId) => {
     try {
-      return await models.User.findByPk(userId);
+      return await models.User.findByPk(userId, {
+        include: [
+          {
+            model: models.User,
+            as: 'Followers',
+            attributes: ['id', 'firstName', 'lastName'],
+            through: { attributes: [] },
+          },
+          {
+            model: models.User,
+            as: 'Following',
+            attributes: ['id', 'firstName', 'lastName'],
+            through: { attributes: [] },
+          },
+        ],
+      });
     } catch (error) {
       throw new CustomError(DAO.FAILED.GET.BY_ID(ENTITY.USER, error), STATUS_CODE.SERVER_ERROR);
     }
