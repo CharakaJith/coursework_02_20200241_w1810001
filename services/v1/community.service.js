@@ -60,6 +60,46 @@ const communityService = {
       },
     };
   },
+
+  unfollowUser: async (data) => {
+    const { userId, followId } = data;
+
+    // validate user details
+    const errorArray = [];
+    errorArray.push(await fieldValidator.validate_number(followId, 'followId'));
+
+    // check request data
+    const filteredErrors = errorArray.filter((obj) => obj !== 1);
+    if (filteredErrors.length !== 0) {
+      logger(LOG_TYPE.ERROR, false, STATUS_CODE.BAD_REQUEST, filteredErrors);
+
+      return {
+        success: false,
+        status: STATUS_CODE.BAD_REQUEST,
+        data: filteredErrors,
+      };
+    }
+
+    // fetch and validate follow
+    const follow = await followDao.getById(followId);
+    if (!follow) {
+      throw new CustomError(RESPONSE.FOLLOW.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+    if (follow.followerId !== userId) {
+      throw new CustomError(RESPONSE.ACTION.DENIED, STATUS_CODE.FORBIDDON);
+    }
+
+    // remove follow
+    await followDao.delete(follow.id);
+
+    return {
+      success: true,
+      status: STATUS_CODE.OK,
+      data: {
+        message: RESPONSE.USER.UNFOLLOWED,
+      },
+    };
+  },
 };
 
 module.exports = communityService;

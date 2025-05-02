@@ -18,6 +18,7 @@ module.exports = {
       DEACTIVATED: 'User profile has been permanently deleted.',
       PWD_UPDATED: 'Password updated successfully.',
       FOLLOWS: 'Already following this user.',
+      UNFOLLOWED: 'Unfollowed this user successfully.',
     },
     COUNTRY: {
       INVALID: 'The country does not exist.',
@@ -34,6 +35,9 @@ module.exports = {
     },
     ACTION: {
       DENIED: 'Action not permitted.',
+    },
+    FOLLOW: {
+      NOT_FOUND: 'Invalid follow id.',
     },
   },
 

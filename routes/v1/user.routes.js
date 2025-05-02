@@ -16,5 +16,6 @@ userRouter.put('/password', userController.updatePassword);
 userRouter.delete('/', userController.deactivate);
 
 userRouter.post('/follow', communityController.follow);
+userRouter.post('/unfollow', communityController.unfollow);
 
 module.exports = userRouter;

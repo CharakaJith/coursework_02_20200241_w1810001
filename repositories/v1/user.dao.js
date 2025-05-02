@@ -29,6 +29,22 @@ const userDao = {
               },
             ],
           },
+          {
+            model: models.User,
+            as: 'Followers',
+            attributes: ['id', 'firstName', 'lastName'],
+            through: {
+              attributes: ['id'],
+            },
+          },
+          {
+            model: models.User,
+            as: 'Following',
+            attributes: ['id', 'firstName', 'lastName'],
+            through: {
+              attributes: ['id'],
+            },
+          },
         ],
       });
     } catch (error) {
@@ -57,13 +73,17 @@ const userDao = {
             model: models.User,
             as: 'Followers',
             attributes: ['id', 'firstName', 'lastName'],
-            through: { attributes: [] },
+            through: {
+              attributes: ['id'],
+            },
           },
           {
             model: models.User,
             as: 'Following',
             attributes: ['id', 'firstName', 'lastName'],
-            through: { attributes: [] },
+            through: {
+              attributes: ['id'],
+            },
           },
         ],
       });
