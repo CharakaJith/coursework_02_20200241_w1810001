@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, RefreshCcw, ThumbsUp, MessageSquare, Plus } from 'lucide-react';
-
+import { Search, RefreshCcw, ThumbsUp, ThumbsDown, UserPlus, Users, MessageSquare, Plus } from 'lucide-react';
+import InfoPopup from '@/modals/info-popup';
 import { USER } from '@/common/messages';
 
 import Profile from '@/assets/images/profile.png';
@@ -17,6 +17,9 @@ function CommunityDisplay() {
   const [currentUser, setCurrentUser] = useState({});
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
+
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -40,6 +43,97 @@ function CommunityDisplay() {
   const handleRefresh = () => {
     setSearch('');
     fetchUsers();
+  };
+
+  // handle follow
+  const handleFollow = (userId) => {
+    // validate access token
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      sessionStorage.setItem('message', USER.SESSION_EXP);
+      navigate('/');
+
+      return;
+    }
+
+    const followDetails = {
+      followerId: userId,
+    };
+
+    api
+      .post('/api/v1/user/follow', followDetails, {
+        headers: {
+          Authorization: `"${accessToken}"`,
+        },
+      })
+      .then((res) => {
+        if (res.data.success === true) {
+          // open info modal
+          setInfoMessage(USER.FOLLOWED);
+          setInfoOpen(true);
+
+          handleRefresh();
+        }
+      })
+      .catch((error) => {
+        // check if access token expire
+        if (error.response.data.response.status === 401) {
+          sessionStorage.clear();
+
+          sessionStorage.setItem('message', USER.SESSION_EXP);
+          navigate('/');
+
+          return;
+        }
+
+        if (error.response.data.response.status === 403) {
+          setInfoMessage(error.response.data.response.data.message);
+          setInfoOpen(true);
+        }
+      });
+  };
+
+  // handle unfollow
+  const handleUnfollow = (followId) => {
+    // validate access token
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      sessionStorage.setItem('message', USER.SESSION_EXP);
+      navigate('/');
+
+      return;
+    }
+
+    const followDetails = {
+      followId: followId,
+    };
+
+    api
+      .post('/api/v1/user/unfollow', followDetails, {
+        headers: {
+          Authorization: `"${accessToken}"`,
+        },
+      })
+      .then((res) => {
+        if (res.data.success === true) {
+          // open info modal
+          setInfoMessage(res.data.response.data.message);
+          setInfoOpen(true);
+
+          handleRefresh();
+        }
+      })
+      .catch((error) => {
+        // check if access token expire
+        if (error.response.data.response.status === 401) {
+          sessionStorage.clear();
+
+          sessionStorage.setItem('message', USER.SESSION_EXP);
+          navigate('/');
+
+          return;
+        }
+      });
   };
 
   // fetch users
@@ -135,7 +229,7 @@ function CommunityDisplay() {
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-4">
             {users.map((user, i) => (
-              <div key={user.id || i} className="rounded-xl bg-[#ECEBDE] flex flex-col items-center p-4 hover:bg-[#D7D3BF]">
+              <div key={user.id || i} className="rounded-xl bg-[#F9F9F6] flex flex-col items-center p-4 hover:bg-[#E0E0DC] cursor-pointer">
                 {/* profile picture */}
                 <div className="w-40 h-40 rounded-full overflow-hidden">
                   <img src={Profile} alt="Profile" className="w-full h-full object-cover" />
@@ -146,28 +240,68 @@ function CommunityDisplay() {
 
                 <hr className="w-full mx-0 my-4 border-t border-[#1a2533]" />
 
-                {/* user details */}
+                {/* user stats */}
                 <div className="flex justify-around w-full">
-                  {/* follow */}
-                  <div className="flex flex-col items-center">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded-full cursor-pointer">
-                      <Plus size={10} />
-                    </button>
-                    <span className="text-xs mt-1">Follow</span>
-                  </div>
-
                   {/* posts */}
                   <div className="flex flex-col items-center">
-                    <MessageSquare size={27} />
-                    <span className="text-xs mt-1">{user.Posts?.length} Posts</span>
+                    <MessageSquare size={20} className="text-[#4A90E2]" />
+                    <span className="text-xs mt-1">{user.Posts.length} Posts</span>
                   </div>
 
-                  {/* total likes */}
+                  {/* likes */}
                   <div className="flex flex-col items-center">
-                    <ThumbsUp size={27} />
-                    <span className="text-xs mt-1">{user.Likes?.length} Likes</span>
+                    <ThumbsUp size={20} className="text-green-600" />
+                    <span className="text-xs mt-1">
+                      {user.Posts?.reduce((total, post) => {
+                        return total + (post.Likes?.filter((like) => like.isLike).length || 0);
+                      }, 0)}{' '}
+                      Likes
+                    </span>
+                  </div>
+
+                  {/* dislikes */}
+                  <div className="flex flex-col items-center">
+                    <ThumbsDown size={20} className="text-[#BE3D2A]" />
+                    <span className="text-xs mt-1">
+                      {user.Posts?.reduce((total, post) => {
+                        return total + (post.Likes?.filter((like) => !like.isLike).length || 0);
+                      }, 0)}{' '}
+                      Dislikes
+                    </span>
+                  </div>
+
+                  {/* followers */}
+                  <div className="flex flex-col items-center">
+                    <UserPlus size={20} className="text-purple-600" />
+                    <span className="text-xs mt-1">{user.Followers?.length || 0} Followers</span>
+                  </div>
+
+                  {/* following */}
+                  <div className="flex flex-col items-center">
+                    <Users size={20} className="text-teal-600" />
+                    <span className="text-xs mt-1">{user.Following?.length || 0} Following</span>
                   </div>
                 </div>
+
+                {/* follow button */}
+                {(() => {
+                  const follower = user.Followers?.find((f) => f.id === currentUser.id);
+                  return follower ? (
+                    <button
+                      onClick={() => handleUnfollow(follower.Follow.id)}
+                      className="mt-4 w-full bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white py-2 rounded-full text-sm"
+                    >
+                      Unfollow
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleFollow(user.id)}
+                      className="mt-4 w-full bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white py-2 rounded-full text-sm"
+                    >
+                      Follow
+                    </button>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -180,6 +314,9 @@ function CommunityDisplay() {
           </div>
         </div>
       )}
+
+      {/* info popup modal */}
+      <InfoPopup isOpen={infoOpen} message={infoMessage} onClose={() => setInfoOpen(false)} />
     </div>
   );
 }

@@ -223,7 +223,7 @@ function MyPosts() {
                   onClick={() => {
                     handlePostClick(post.id);
                   }}
-                  className="flex-1 rounded-xl bg-[#ECEBDE] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#D7D3BF]"
+                  className="flex-1 rounded-xl bg-[#F9F9F6] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#E0E0DC]"
                 >
                   <div className="flex-1">
                     <div className="text-lg font-bold mb-1">

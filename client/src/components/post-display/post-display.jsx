@@ -85,7 +85,7 @@ function PostDisplay() {
     };
 
     api
-      .post('/api/v1/react', reactDetails, {
+      .post('/api/v1/post/react', reactDetails, {
         headers: {
           Authorization: `"${accessToken}"`,
         },
@@ -139,7 +139,7 @@ function PostDisplay() {
       setInfoOpen(true);
     } else {
       api
-        .post('/api/v1/comment', commentDetails, {
+        .post('/api/v1/post/comment', commentDetails, {
           headers: {
             Authorization: `"${accessToken}"`,
           },
@@ -298,17 +298,17 @@ function PostDisplay() {
                 {/* post status */}
                 <div className="flex items-center gap-8 mt-4 justify-end">
                   <div className="flex flex-col items-center text-xs">
-                    <ThumbsUp className="w-4 h-4" />
+                    <ThumbsUp className="w-4 h-4 text-green-600" />
                     <p className="mt-1">{post.Likes.filter((like) => like.isLike === true).length} Likes</p>
                   </div>
 
                   <div className="flex flex-col items-center text-xs">
-                    <ThumbsDown className="w-4 h-4" />
+                    <ThumbsDown className="w-4 h-4 text-[#BE3D2A]" />
                     <p className="mt-1">{post.Likes.filter((like) => like.isLike === false).length} Dislikes</p>
                   </div>
 
                   <div className="flex flex-col items-center text-xs">
-                    <MessageSquare className="w-4 h-4" />
+                    <MessageSquare className="w-4 h-4 text-[#4A90E2]" />
                     <p className="mt-1">
                       {post.Comments.length} {post.Comments.length === 1 ? ' Comment' : ' Comments'}
                     </p>

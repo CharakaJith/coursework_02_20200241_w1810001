@@ -11,6 +11,7 @@ export const USER = {
   LOGGED_OUT: 'You must be logged in to continue.',
   SESSION_EXP: 'Your session has expired. Please log in again.',
   PASSWORD_CHANGED: 'Your password has been changed. Please log in again.',
+  FOLLOWED: 'You are now following this user.',
 };
 
 // blog post messages

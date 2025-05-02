@@ -53,7 +53,7 @@ function AboutPage() {
           {/* body */}
           <div className="flex flex-1 flex-col p-4 h-screen">
             <div className="flex flex-1">
-              <div className="w-full h-full rounded-xl bg-[#C9E9D2] text-black flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium">
+              <div className="w-full h-full rounded-xl bg-[#EAF6E4] text-black flex flex-col items-start justify-center space-y-4 p-16 text-lg font-medium">
                 <p>
                   TravelTales is an innovative, tourism-focused blogging platform designed as part of the Coursework 02 requirements for the Advanced
                   Server-Side Web Development module. It combines real-time country data with user-generated travel stories to create an engaging,

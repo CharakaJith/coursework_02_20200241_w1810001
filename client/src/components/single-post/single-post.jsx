@@ -50,7 +50,7 @@ function SinglePost({ postId }) {
     };
 
     api
-      .post('/api/v1/react', reactDetails, {
+      .post('/api/v1/post/react', reactDetails, {
         headers: {
           Authorization: `"${accessToken}"`,
         },
@@ -109,7 +109,7 @@ function SinglePost({ postId }) {
       setInfoOpen(true);
     } else {
       api
-        .post('/api/v1/comment', commentDetails, {
+        .post('/api/v1/post/comment', commentDetails, {
           headers: {
             Authorization: `"${accessToken}"`,
           },
