@@ -8,7 +8,7 @@ function InfoPopup({ isOpen, message, onClose }) {
     if (isOpen) {
       const timer = setTimeout(() => {
         handleClose();
-      }, 5000);
+      }, 4000);
 
       return () => clearTimeout(timer);
     }

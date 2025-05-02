@@ -11,6 +11,7 @@ userRouter.post('/login', userController.login);
 userRouter.use(authenticate);
 
 userRouter.get('/', userController.getAll);
+userRouter.get('/:id', userController.getById);
 userRouter.put('/', userController.update);
 userRouter.put('/password', userController.updatePassword);
 userRouter.delete('/', userController.deactivate);

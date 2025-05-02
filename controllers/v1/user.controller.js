@@ -71,6 +71,25 @@ const userController = {
     }
   },
 
+  getById: async (req, res, next) => {
+    const { id } = req.params;
+
+    const response = await userService.getUserById(id);
+    const { success, status, data } = response;
+
+    res.status(status).json({
+      success: success,
+      response: {
+        status: status,
+        data: data,
+      },
+    });
+    try {
+    } catch (error) {
+      next(error);
+    }
+  },
+
   update: async (req, res, next) => {
     try {
       const { id } = req.user;

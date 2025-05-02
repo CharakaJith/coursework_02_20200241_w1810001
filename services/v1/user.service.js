@@ -142,6 +142,27 @@ const userService = {
     };
   },
 
+  getUserById: async (userId) => {
+    // validate user id
+    if (isNaN(userId) || isNaN(parseFloat(userId))) {
+      throw new CustomError(RESPONSE.USER.INVALID_ID, STATUS_CODE.BAD_REQUEST);
+    }
+
+    // fetch user
+    const user = await userDao.getById(userId);
+    if (!user) {
+      throw new CustomError(RESPONSE.USER.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    return {
+      success: true,
+      status: STATUS_CODE.OK,
+      data: {
+        user: user,
+      },
+    };
+  },
+
   updateUserDetails: async (data) => {
     const { id, firstName, lastName, phone } = data;
 

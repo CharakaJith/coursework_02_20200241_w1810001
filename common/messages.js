@@ -10,6 +10,7 @@ module.exports = {
   // response payload messages
   RESPONSE: {
     USER: {
+      INVALID_ID: 'Invalid format for user ID.',
       EXISTS: 'User is already registered.',
       INVALID_CRED: 'Invalid user credentials.',
       INVALID_PASSWORD: 'Current password is incorrect.',
