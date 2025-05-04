@@ -235,10 +235,12 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
             <CircleX size={28} />
           </button>
 
+          {/* popup title */}
           <h2 className="text-2xl font-bold mb-4">{mode === 'create' ? 'Create New Post' : 'Update Blog Post'}</h2>
 
           {/* country form */}
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            {/* title */}
             <div className="flex flex-col gap-1">
               <input
                 type="text"
@@ -252,6 +254,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
               </p>
             </div>
 
+            {/* content */}
             <div className="flex flex-col gap-1">
               <textarea
                 placeholder="Content"
@@ -264,6 +267,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
               </p>
             </div>
 
+            {/* visited date */}
             <input
               type="date"
               value={visited}
@@ -271,6 +275,7 @@ function PostPopup({ isOpen, onClose, onSuccess, mode = POST.TYPE.CREATE, post =
               className="border border-gray-300 rounded-lg p-2 cursor-pointer w-full"
             />
 
+            {/* country */}
             <select value={countryId} onChange={handleCountryChange} className="border border-gray-300 rounded-lg p-2 cursor-pointer">
               <option value="">Select a country</option>
               {countries.map((c) => (

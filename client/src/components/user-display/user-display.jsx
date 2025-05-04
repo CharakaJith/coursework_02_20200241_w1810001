@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, UserPlus, MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 import InfoPopup from '@/modals/info-popup';
-import { COMMENT, REACT, USER } from '@/common/messages';
+import PasswordPopup from '@/modals/password-popup';
+import { USER } from '@/common/messages';
 
 import Profile from '@/assets/images/profile.png';
 
@@ -16,6 +17,8 @@ const api = axios.create({
 function UserDisplay({ userId }) {
   const [user, setUser] = useState({});
   const [currentUser, setCurrentUser] = useState({});
+
+  const [passwordOpen, setPasswordOpen] = useState(false);
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
@@ -30,6 +33,21 @@ function UserDisplay({ userId }) {
   // handle post click
   const handlePostClick = (postId) => {
     navigate(`/post/${postId}`);
+  };
+
+  // handle update password click
+  const handlePasswordClick = () => {
+    setPasswordOpen(true);
+  };
+
+  // on password update success
+  const onPasswordSuccess = (message) => {
+    setInfoMessage(message);
+    setInfoOpen(true);
+
+    // logout user
+    sessionStorage.clear();
+    navigate('/');
   };
 
   // handle follow
@@ -247,30 +265,48 @@ function UserDisplay({ userId }) {
       </div>
 
       {/* action buttons */}
-      {(() => {
-        const follower = user.Followers?.find((f) => f.id === currentUser.id);
-        return follower ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleUnfollow(follower.Follow.id);
-            }}
-            className="mt-4 w-full bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white py-2 rounded-full text-sm"
-          >
-            Unfollow
-          </button>
-        ) : (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleFollow(user.id);
-            }}
-            className="mt-4 w-full bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white py-2 rounded-full text-sm"
-          >
-            Follow
-          </button>
-        );
-      })()}
+      {user.id !== currentUser.id ? (
+        <>
+          {(() => {
+            const follower = user.Followers?.find((f) => f.id === currentUser.id);
+            return follower ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUnfollow(follower.Follow.id);
+                }}
+                className="mt-4 w-full bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white py-2 rounded-full text-sm font-bold"
+              >
+                Unfollow
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFollow(user.id);
+                }}
+                className="mt-4 w-full bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white py-2 rounded-full text-sm font-bold"
+              >
+                Follow
+              </button>
+            );
+          })()}
+        </>
+      ) : (
+        <>
+          <div className="mt-4 flex gap-4">
+            <button className="flex-1 bg-[#7BD389] hover:bg-[#60B56D] cursor-pointer text-black font-bold py-2 rounded-full text-sm">
+              Update User Details
+            </button>
+            <button
+              onClick={handlePasswordClick}
+              className="flex-1 bg-[#FFD95F] hover:bg-[#E6B92E] cursor-pointer text-black font-bold py-2 rounded-full text-sm"
+            >
+              Update Password
+            </button>
+          </div>
+        </>
+      )}
 
       <hr />
 
@@ -316,6 +352,15 @@ function UserDisplay({ userId }) {
       ) : (
         <p className="text-center text-gray-500 py-6">No posts to display.</p>
       )}
+
+      {/* update password popup */}
+      <PasswordPopup
+        isOpen={passwordOpen}
+        onClose={() => {
+          setPasswordOpen(false);
+        }}
+        onSuccess={onPasswordSuccess}
+      />
 
       {/* info popup modal */}
       <InfoPopup isOpen={infoOpen} message={infoMessage} onClose={() => setInfoOpen(false)} />

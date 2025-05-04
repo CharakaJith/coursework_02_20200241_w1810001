@@ -311,7 +311,7 @@ function CommunityDisplay() {
                         e.stopPropagation();
                         handleUnfollow(follower.Follow.id);
                       }}
-                      className="mt-4 w-full bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white py-2 rounded-full text-sm"
+                      className="mt-4 w-full bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white py-2 rounded-full text-sm font-bold"
                     >
                       Unfollow
                     </button>
@@ -321,7 +321,7 @@ function CommunityDisplay() {
                         e.stopPropagation();
                         handleFollow(user.id);
                       }}
-                      className="mt-4 w-full bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white py-2 rounded-full text-sm"
+                      className="mt-4 w-full bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white py-2 rounded-full text-sm font-bold"
                     >
                       Follow
                     </button>
