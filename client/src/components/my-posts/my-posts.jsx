@@ -72,6 +72,14 @@ function MyPosts() {
     fetchPosts();
   };
 
+  // handle go to top
+  const handleGoToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   // confrim delete
   const handleDelete = (postId) => {
     setPostId(postId);
@@ -277,6 +285,19 @@ function MyPosts() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* button display area */}
+          <div className="flex flex-1 flex-col items-center p-4">
+            <div className="flex flex-col gap-6 w-full">
+              {/* go to top button */}
+              <button
+                onClick={handleGoToTop}
+                className="rounded-xl bg-[#48A6A7] hover:bg-[#357D7D] text-white text-lg font-semibold px-6 py-3 transition-colors duration-200 shadow-md cursor-pointer"
+              >
+                Go To Top
+              </button>
+            </div>
           </div>
         </div>
       ) : (

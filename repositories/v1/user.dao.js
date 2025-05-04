@@ -27,6 +27,9 @@ const userDao = {
               {
                 model: models.Like,
               },
+              {
+                model: models.Comment,
+              },
             ],
           },
           {
@@ -69,6 +72,14 @@ const userDao = {
     try {
       return await models.User.findByPk(userId, {
         include: [
+          {
+            model: models.Post,
+            include: [
+              {
+                model: models.Like,
+              },
+            ],
+          },
           {
             model: models.User,
             as: 'Followers',

@@ -7,6 +7,7 @@ import ContactPage from './pages/ContactPage/ContactPage';
 import MyPostPage from './pages/MyPostPage/MyPostPage';
 import CommunityPage from './pages/CommunityPage/CommunityPage';
 import PostDisplayPage from './pages/PostDisplayPage/PostDisplayPage';
+import UserPage from './pages/UserPage/UserPage';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/posts" element={<MyPostPage />} />
         <Route exact path="/community" element={<CommunityPage />} />
         <Route exact path="/post/:id" element={<PostDisplayPage />} />
+        <Route exact path="/user/:id" element={<UserPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

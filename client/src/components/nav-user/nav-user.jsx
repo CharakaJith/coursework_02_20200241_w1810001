@@ -40,6 +40,11 @@ function NavUser() {
     navigate('/');
   };
 
+  // handle post click
+  const handleAccountClick = (userId) => {
+    navigate(`/user/${userId}`);
+  };
+
   // handle new post click
   const handleNewPostClick = () => {
     setPostOpen(true);
@@ -122,7 +127,12 @@ function NavUser() {
 
               {/* account */}
               <DropdownMenuGroup>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleAccountClick(user.id);
+                  }}
+                >
                   <CircleUser />
                   Account
                 </DropdownMenuItem>

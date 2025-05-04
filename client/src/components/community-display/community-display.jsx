@@ -45,6 +45,19 @@ function CommunityDisplay() {
     fetchUsers();
   };
 
+  // hancle user click
+  const handleUserClick = (userId) => {
+    navigate(`/user/${userId}`);
+  };
+
+  // handle go to top
+  const handleGoToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   // handle follow
   const handleFollow = (userId) => {
     // validate access token
@@ -229,7 +242,13 @@ function CommunityDisplay() {
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-4">
             {users.map((user, i) => (
-              <div key={user.id || i} className="rounded-xl bg-[#F9F9F6] flex flex-col items-center p-4 hover:bg-[#E0E0DC] cursor-pointer">
+              <div
+                key={user.id || i}
+                onClick={() => {
+                  handleUserClick(user.id);
+                }}
+                className="rounded-xl bg-[#F9F9F6] flex flex-col items-center p-4 hover:bg-[#E0E0DC] cursor-pointer"
+              >
                 {/* profile picture */}
                 <div className="w-40 h-40 rounded-full overflow-hidden">
                   <img src={Profile} alt="Profile" className="w-full h-full object-cover" />
@@ -288,14 +307,20 @@ function CommunityDisplay() {
                   const follower = user.Followers?.find((f) => f.id === currentUser.id);
                   return follower ? (
                     <button
-                      onClick={() => handleUnfollow(follower.Follow.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUnfollow(follower.Follow.id);
+                      }}
                       className="mt-4 w-full bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white py-2 rounded-full text-sm"
                     >
                       Unfollow
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleFollow(user.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFollow(user.id);
+                      }}
                       className="mt-4 w-full bg-[#4A90E2] hover:bg-[#357ABD] cursor-pointer text-white py-2 rounded-full text-sm"
                     >
                       Follow
@@ -304,6 +329,19 @@ function CommunityDisplay() {
                 })()}
               </div>
             ))}
+          </div>
+
+          {/* button display area */}
+          <div className="flex flex-1 flex-col items-center p-4">
+            <div className="flex flex-col gap-6 w-full">
+              {/* go to top button */}
+              <button
+                onClick={handleGoToTop}
+                className="rounded-xl bg-[#48A6A7] hover:bg-[#357D7D] text-white text-lg font-semibold px-6 py-3 transition-colors duration-200 shadow-md cursor-pointer"
+              >
+                Go To Top
+              </button>
+            </div>
           </div>
         </div>
       ) : (

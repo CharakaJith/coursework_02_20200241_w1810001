@@ -4,10 +4,10 @@ import AppSidebar from '@/components/app-sidebar/app-sidebar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import SinglePost from '@/components/single-post/single-post';
+import UserDisplay from '@/components/user-display/user-display';
 import { USER } from '@/common/messages';
 
-function PostDisplayPage() {
+function UserPage() {
   const { id } = useParams();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,18 +42,18 @@ function PostDisplayPage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="text-3xl font-bold">Blog Post</BreadcrumbPage>
+                  <BreadcrumbPage className="text-3xl font-bold">User Profile</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </header>
 
-          {/* post display */}
-          <SinglePost postId={id} />
+          {/* user display */}
+          <UserDisplay userId={id} />
         </SidebarInset>
       </SidebarProvider>
     </div>
   );
 }
 
-export default PostDisplayPage;
+export default UserPage;

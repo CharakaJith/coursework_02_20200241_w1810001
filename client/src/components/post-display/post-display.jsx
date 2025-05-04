@@ -60,6 +60,11 @@ function PostDisplay() {
     navigate(`/post/${postId}`);
   };
 
+  // hancle user click
+  const handleUserClick = (userId) => {
+    navigate(`/user/${userId}`);
+  };
+
   // handle go to top
   const handleGoToTop = () => {
     window.scrollTo({
@@ -204,8 +209,8 @@ function PostDisplay() {
       });
   };
 
+  // get logged in user
   useEffect(() => {
-    // get logged in user
     const user = JSON.parse(sessionStorage.getItem('user'));
     if (user) {
       setCurrentUser(user);
@@ -215,16 +220,12 @@ function PostDisplay() {
     }
   }, [navigate]);
 
+  // fetch all blog posts
   useEffect(() => {
     if (currentUser.id) {
       fetchPosts();
     }
   }, [currentUser]);
-
-  // fetch all blog posts
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   return (
     <div>
@@ -280,8 +281,14 @@ function PostDisplay() {
                     <div className="text-2xl font-bold leading-tight">{post.title}</div>
                     <div className="text-sm leading-tight mt-2 italic">
                       posted by{' '}
-                      <span className="">
-                        {post.User.firstName} {post.User.lastName}
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUserClick(post.User.id);
+                        }}
+                        className="text-blue-500 hover:text-blue-800 cursor-pointer font-bold"
+                      >
+                        {currentUser.id === post.User.id ? 'You' : `${post.User.firstName} ${post.User.lastName}`}
                       </span>
                     </div>
                   </div>
