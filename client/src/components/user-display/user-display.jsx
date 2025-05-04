@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, UserPlus, MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Users, UserPlus, MessageSquare, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp } from 'lucide-react';
 import InfoPopup from '@/modals/info-popup';
 import PasswordPopup from '@/modals/password-popup';
 import DetailsPopup from '@/modals/details-popup';
@@ -18,6 +18,9 @@ const api = axios.create({
 function UserDisplay({ userId }) {
   const [user, setUser] = useState({});
   const [currentUser, setCurrentUser] = useState({});
+  const [postExpand, setPostExpand] = useState(false);
+  const [followerExpand, setFollowerExpand] = useState(false);
+  const [followingExpand, setFollowingExpand] = useState(false);
 
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -35,6 +38,11 @@ function UserDisplay({ userId }) {
   // handle post click
   const handlePostClick = (postId) => {
     navigate(`/post/${postId}`);
+  };
+
+  // handle user click
+  const handleUserClick = (userId) => {
+    navigate(`/user/${userId}`);
   };
 
   // handle update password click
@@ -64,6 +72,15 @@ function UserDisplay({ userId }) {
 
     fetchUser();
   };
+
+  // toggle post handler
+  const togglePostExpanded = () => setPostExpand((prev) => !prev);
+
+  // toggle follower handler
+  const toggleFollowerExpanded = () => setFollowerExpand((prev) => !prev);
+
+  // toggle following handler
+  const toggleFollowingExpanded = () => setFollowingExpand((prev) => !prev);
 
   // handle follow
   const handleFollow = (userId) => {
@@ -206,6 +223,9 @@ function UserDisplay({ userId }) {
   useEffect(() => {
     if (currentUser.id) {
       fetchUser();
+      setPostExpand(false);
+      setFollowerExpand(false);
+      setFollowingExpand(false);
     }
   }, [currentUser]);
 
@@ -328,48 +348,148 @@ function UserDisplay({ userId }) {
 
       <hr />
 
-      {/* posts */}
-      {Array.isArray(user.Posts) && user.Posts.length > 0 ? (
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="flex flex-col gap-3">
-            {user.Posts.map((post, i) => (
-              <div key={post.id || i} className="flex items-center justify-between gap-4">
-                {/* post display card */}
-                <div
-                  onClick={() => handlePostClick?.(post.id)}
-                  className="flex-1 rounded-xl bg-[#F9F9F6] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#E0E0DC]"
-                >
-                  <div className="flex-1">
-                    <div className="text-lg font-bold mb-1">
-                      {post.title}{' '}
-                      <span className="text-sm italic text-gray-500">(published on {new Date(post.createdAt).toLocaleDateString('en-GB')})</span>
-                    </div>
-                    <div className="text-sm text-gray-700">{post.content.slice(0, 150)}...</div>
-                  </div>
-                </div>
+      {/* posts section */}
+      <div className="border border-gray-200 rounded-xl overflow-hidden my-4">
+        {/* header and toggle */}
+        <div
+          onClick={togglePostExpanded}
+          className="flex items-center justify-between bg-[#F0F0EC] px-4 py-3 cursor-pointer hover:bg-[#E0E0DC] select-none"
+        >
+          <h3 className="text-lg font-bold">User Posts</h3>
+          {postExpand ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        </div>
 
-                {/* status */}
-                <div className="flex items-center gap-8 mr-5 ml-5">
-                  <div className="flex flex-col items-center text-[#007F73] hover:scale-125 transition-transform duration-200 cursor-pointer">
-                    <ThumbsUp className="w-6 h-6" />
-                    <span className="text-sm font-semibold">{post.Likes?.filter((l) => l.isLike)?.length || 0}</span>
-                  </div>
-                  <div className="flex flex-col items-center text-[#BE3D2A] hover:scale-125 transition-transform duration-200 cursor-pointer">
-                    <ThumbsDown className="w-6 h-6" />
-                    <span className="text-sm font-semibold">{post.Likes?.filter((l) => !l.isLike)?.length || 0}</span>
-                  </div>
-                  <div className="flex flex-col items-center text-[#49108B] hover:scale-125 transition-transform duration-200 cursor-pointer">
-                    <MessageSquare className="w-6 h-6" />
-                    <span className="text-sm font-semibold">{post.Comments?.length || 0}</span>
-                  </div>
+        {/* posts */}
+        {postExpand && (
+          <>
+            {Array.isArray(user.Posts) && user.Posts.length > 0 ? (
+              <div className="flex flex-1 flex-col gap-4 p-4">
+                <div className="flex flex-col gap-3">
+                  {user.Posts.map((post, i) => (
+                    <div key={post.id || i} className="flex items-center justify-between gap-4">
+                      {/* post display card */}
+                      <div
+                        onClick={() => handlePostClick?.(post.id)}
+                        className="flex-1 rounded-xl bg-[#F9F9F6] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#E0E0DC]"
+                      >
+                        <div className="flex-1">
+                          <div className="text-lg font-bold mb-1">
+                            {post.title}{' '}
+                            <span className="text-sm italic text-gray-500">
+                              (published on {new Date(post.createdAt).toLocaleDateString('en-GB')})
+                            </span>
+                          </div>
+                          <div className="text-sm text-gray-700">{post.content.slice(0, 150)}...</div>
+                        </div>
+                      </div>
+
+                      {/* status */}
+                      <div className="flex items-center gap-8 mr-5 ml-5">
+                        <div className="flex flex-col items-center text-[#007F73] hover:scale-125 transition-transform duration-200 cursor-pointer">
+                          <ThumbsUp className="w-6 h-6" />
+                          <span className="text-sm font-semibold">{post.Likes?.filter((l) => l.isLike)?.length || 0}</span>
+                        </div>
+                        <div className="flex flex-col items-center text-[#BE3D2A] hover:scale-125 transition-transform duration-200 cursor-pointer">
+                          <ThumbsDown className="w-6 h-6" />
+                          <span className="text-sm font-semibold">{post.Likes?.filter((l) => !l.isLike)?.length || 0}</span>
+                        </div>
+                        <div className="flex flex-col items-center text-[#49108B] hover:scale-125 transition-transform duration-200 cursor-pointer">
+                          <MessageSquare className="w-6 h-6" />
+                          <span className="text-sm font-semibold">{post.Comments?.length || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            ) : (
+              <p className="text-center text-gray-500 py-6">No posts to display.</p>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* follower section */}
+      <div className="border border-gray-200 rounded-xl overflow-hidden my-4">
+        {/* header and toggle */}
+        <div
+          onClick={toggleFollowerExpanded}
+          className="flex items-center justify-between bg-[#F0F0EC] px-4 py-3 cursor-pointer hover:bg-[#E0E0DC] select-none"
+        >
+          <h3 className="text-lg font-bold">Followers</h3>
+          {postExpand ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </div>
-      ) : (
-        <p className="text-center text-gray-500 py-6">No posts to display.</p>
-      )}
+
+        {/* followers */}
+        {followerExpand && (
+          <>
+            {Array.isArray(user.Followers) && user.Followers.length > 0 ? (
+              <div className="flex flex-1 flex-col gap-4 p-4">
+                <div className="flex flex-col gap-3">
+                  {user.Followers.map((follower, i) => (
+                    <div key={follower.id || i} className="flex items-center justify-between gap-4">
+                      {/* user display card */}
+                      <div
+                        onClick={() => handleUserClick?.(follower.id)}
+                        className="flex-1 rounded-xl bg-[#F9F9F6] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#E0E0DC]"
+                      >
+                        <div className="flex-1">
+                          <div className="text-lg font-bold mb-1">
+                            {follower.firstName} {follower.lastName}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-center text-gray-500 py-6">No followers to display.</p>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* following section */}
+      <div className="border border-gray-200 rounded-xl overflow-hidden my-4">
+        {/* header and toggle */}
+        <div
+          onClick={toggleFollowingExpanded}
+          className="flex items-center justify-between bg-[#F0F0EC] px-4 py-3 cursor-pointer hover:bg-[#E0E0DC] select-none"
+        >
+          <h3 className="text-lg font-bold">Following</h3>
+          {postExpand ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        </div>
+
+        {/* following */}
+        {followingExpand && (
+          <>
+            {Array.isArray(user.Following) && user.Following.length > 0 ? (
+              <div className="flex flex-1 flex-col gap-4 p-4">
+                <div className="flex flex-col gap-3">
+                  {user.Following.map((following, i) => (
+                    <div key={following.id || i} className="flex items-center justify-between gap-4">
+                      {/* user display card */}
+                      <div
+                        onClick={() => handleUserClick?.(following.id)}
+                        className="flex-1 rounded-xl bg-[#F9F9F6] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 cursor-pointer hover:bg-[#E0E0DC]"
+                      >
+                        <div className="flex-1">
+                          <div className="text-lg font-bold mb-1">
+                            {following.firstName} {following.lastName}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-center text-gray-500 py-6">No followers to display.</p>
+            )}
+          </>
+        )}
+      </div>
 
       {/* update details popup */}
       <DetailsPopup
