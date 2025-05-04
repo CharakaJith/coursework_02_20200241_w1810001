@@ -9,40 +9,40 @@ const api = axios.create({
   baseURL: apiUrl,
 });
 
-function PasswordPopup({ isOpen, onClose, onSuccess }) {
-  const [oldPassword, setOldPassword] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+function DetailsPopup({ isOpen, onClose, onSuccess, user = {} }) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [mobile, setMobile] = useState('');
 
   const [error, setError] = useState([]);
   const [isError, setIsError] = useState(false);
 
-  // handle old password change
-  const handleOldPasswordChange = (e) => {
-    const oldPassword = e.target.value;
-    setOldPassword(oldPassword);
+  // handle first name change
+  const handleFirstnameChange = (e) => {
+    const firstName = e.target.value;
+    setFirstName(firstName);
 
-    if (oldPassword.trim().length > 0) {
+    if (firstName.trim().length > 0) {
       setIsError(false);
     }
   };
 
-  // handle password change
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
+  // handle last name change
+  const handleLastnameChange = (e) => {
+    const lastName = e.target.value;
+    setLastName(lastName);
 
-    if (newPassword.trim().length > 0) {
+    if (lastName.trim().length > 0) {
       setIsError(false);
     }
   };
 
-  // handle confrim password on change
-  const handleConfrimPasswordChange = (e) => {
-    const newConfirmPassword = e.target.value;
-    setConfirmPassword(newConfirmPassword);
+  // handle mobile change
+  const handleMobileChange = (e) => {
+    const mobile = e.target.value;
+    setMobile(mobile);
 
-    if (newConfirmPassword.trim().length > 0) {
+    if (mobile.trim().length > 0) {
       setIsError(false);
     }
   };
@@ -52,20 +52,9 @@ function PasswordPopup({ isOpen, onClose, onSuccess }) {
     e.preventDefault();
 
     // validate form fields
-    if (
-      !oldPassword ||
-      oldPassword.trim().length === 0 ||
-      !password ||
-      password.trim().length === 0 ||
-      !confirmPassword ||
-      confirmPassword.trim().length === 0
-    ) {
+    if (!firstName || firstName.trim().length === 0 || !lastName || lastName.trim().length === 0 || !mobile || mobile.trim().length === 0) {
       setError([VALIDATE.EMPTY_FIELDS]);
       setIsError(true);
-    } else if (password !== confirmPassword) {
-      setError([VALIDATE.PASSWORD_MISMATCH]);
-      setIsError(true);
-      return;
     } else {
       // get access token
       const accessToken = sessionStorage.getItem('accessToken');
@@ -76,20 +65,21 @@ function PasswordPopup({ isOpen, onClose, onSuccess }) {
       }
 
       // request body
-      const passwordDetails = {
-        oldPassword: oldPassword,
-        newPassword: password,
+      const userDetails = {
+        firstName: firstName,
+        lastName: lastName,
+        phone: mobile,
       };
 
       api
-        .put('/api/v1/user/password', passwordDetails, {
+        .put('/api/v1/user', userDetails, {
           headers: {
             Authorization: `"${accessToken}"`,
           },
         })
         .then((res) => {
           if (res.data.success === true) {
-            onSuccess(res.data.response.data.message);
+            onSuccess(USER.UPDATED);
             onClose();
           }
         })
@@ -110,19 +100,20 @@ function PasswordPopup({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  // set user details
   useEffect(() => {
-    setOldPassword('');
-    setPassword('');
-    setConfirmPassword('');
-    setError('');
-    setIsError(false);
-  }, [isOpen]);
+    if (isOpen && user) {
+      setFirstName(user.firstName || '');
+      setLastName(user.lastName || '');
+      setMobile(user.phone || '');
+    }
+  }, [isOpen, user]);
 
   if (!isOpen) return null;
 
   return (
     <div>
-      {/* update password popup */}
+      {/* update info popup */}
       <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg relative">
           {/* close button */}
@@ -131,39 +122,39 @@ function PasswordPopup({ isOpen, onClose, onSuccess }) {
           </button>
 
           {/* popup title */}
-          <h2 className="text-2xl font-bold mb-4">Update Password</h2>
+          <h2 className="text-2xl font-bold mb-4">Update User Details</h2>
 
-          {/* password form */}
+          {/* details form */}
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            {/* current password */}
+            {/* first name */}
             <div className="flex flex-col gap-1">
               <input
-                type="password"
-                value={oldPassword}
-                onChange={handleOldPasswordChange}
-                placeholder="Current Password"
+                type="text"
+                value={firstName}
+                onChange={handleFirstnameChange}
+                placeholder="Firstname"
                 className="border border-gray-300 rounded-lg p-2"
               />
             </div>
 
-            {/* new password */}
+            {/* last name */}
             <div className="flex flex-col gap-1">
               <input
-                type="password"
-                value={password}
-                onChange={handlePasswordChange}
-                placeholder="Current Password"
+                type="text"
+                value={lastName}
+                onChange={handleLastnameChange}
+                placeholder="Lastname"
                 className="border border-gray-300 rounded-lg p-2"
               />
             </div>
 
-            {/* confrim password */}
+            {/* mobile */}
             <div className="flex flex-col gap-1">
               <input
-                type="password"
-                value={confirmPassword}
-                onChange={handleConfrimPasswordChange}
-                placeholder="New Password"
+                type="text"
+                value={mobile}
+                onChange={handleMobileChange}
+                placeholder="Mobile number"
                 className="border border-gray-300 rounded-lg p-2"
               />
             </div>
@@ -179,7 +170,7 @@ function PasswordPopup({ isOpen, onClose, onSuccess }) {
 
             {/* submit password */}
             <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer mt-0">
-              Update Password
+              Update Details
             </button>
           </form>
         </div>
@@ -188,4 +179,4 @@ function PasswordPopup({ isOpen, onClose, onSuccess }) {
   );
 }
 
-export default PasswordPopup;
+export default DetailsPopup;

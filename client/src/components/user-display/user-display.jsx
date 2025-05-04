@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Users, UserPlus, MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react';
 import InfoPopup from '@/modals/info-popup';
 import PasswordPopup from '@/modals/password-popup';
+import DetailsPopup from '@/modals/details-popup';
 import { USER } from '@/common/messages';
 
 import Profile from '@/assets/images/profile.png';
@@ -19,6 +20,7 @@ function UserDisplay({ userId }) {
   const [currentUser, setCurrentUser] = useState({});
 
   const [passwordOpen, setPasswordOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
@@ -48,6 +50,19 @@ function UserDisplay({ userId }) {
     // logout user
     sessionStorage.clear();
     navigate('/');
+  };
+
+  // handle update details click
+  const handleDetailsClick = () => {
+    setDetailsOpen(true);
+  };
+
+  // on detail update success
+  const onDetailSuccess = (message) => {
+    setInfoMessage(message);
+    setInfoOpen(true);
+
+    fetchUser();
   };
 
   // handle follow
@@ -295,7 +310,10 @@ function UserDisplay({ userId }) {
       ) : (
         <>
           <div className="mt-4 flex gap-4">
-            <button className="flex-1 bg-[#7BD389] hover:bg-[#60B56D] cursor-pointer text-black font-bold py-2 rounded-full text-sm">
+            <button
+              onClick={handleDetailsClick}
+              className="flex-1 bg-[#7BD389] hover:bg-[#60B56D] cursor-pointer text-black font-bold py-2 rounded-full text-sm"
+            >
               Update User Details
             </button>
             <button
@@ -352,6 +370,16 @@ function UserDisplay({ userId }) {
       ) : (
         <p className="text-center text-gray-500 py-6">No posts to display.</p>
       )}
+
+      {/* update details popup */}
+      <DetailsPopup
+        isOpen={detailsOpen}
+        onClose={() => {
+          setDetailsOpen(false);
+        }}
+        onSuccess={onDetailSuccess}
+        user={user}
+      />
 
       {/* update password popup */}
       <PasswordPopup
