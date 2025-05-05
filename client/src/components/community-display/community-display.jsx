@@ -184,8 +184,8 @@ function CommunityDisplay() {
       });
   };
 
+  // get logged in user
   useEffect(() => {
-    // get logged in user
     const user = JSON.parse(sessionStorage.getItem('user'));
     if (user) {
       setCurrentUser(user);
@@ -195,6 +195,7 @@ function CommunityDisplay() {
     }
   }, [navigate]);
 
+  // fetch users
   useEffect(() => {
     if (currentUser.id) {
       fetchUsers();
@@ -345,7 +346,7 @@ function CommunityDisplay() {
           </div>
         </div>
       ) : (
-        // no user indicate text
+        // no user text
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full max-w-full min-h-12 bg-muted flex items-center justify-center text-black rounded-xl italic text-lg">
             Looks like it's a bit quiet here.....

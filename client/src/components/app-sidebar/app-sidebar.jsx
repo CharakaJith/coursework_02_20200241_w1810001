@@ -18,7 +18,7 @@ function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Helper function to check if a path is active
+  // check active path
   const isActive = (path) => {
     return location.pathname === path;
   };
@@ -58,7 +58,7 @@ function AppSidebar() {
       </SidebarHeader>
 
       <div className="flex-1 flex flex-col">
-        {/* pushes the content to center */}
+        {/* center content */}
         <div className="flex-1"></div>
 
         {/* content */}

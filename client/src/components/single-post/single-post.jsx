@@ -267,7 +267,7 @@ function SinglePost({ postId }) {
             <p className="text-gray-600 text-lg mt-2 font-bold italic">Visited on: {new Date(post.visitDate).toLocaleDateString('en-GB')}</p>
           </div>
           <div className="flex flex-col items-center">
-            <img src={post.Country?.flagUrl} alt="Country Flag" className="w-40 h-20 rounded-xl" />
+            <img src={post.Country?.flagUrl} alt="Country Flag" className="w-auto h-20 rounded-xl" />
             <p className="mt-2 text-sm text-gray-700 font-medium text-center">
               {post.Country?.officialName} ({post.Country?.commonName})
             </p>
