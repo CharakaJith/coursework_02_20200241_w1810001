@@ -16,7 +16,10 @@ const api = axios.create({
 function CommunityDisplay() {
   const [currentUser, setCurrentUser] = useState({});
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [search, setSearch] = useState('');
+
+  const [selectedStatus, setSelectedStatus] = useState('all');
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
@@ -25,7 +28,7 @@ function CommunityDisplay() {
 
   // handle search
   const handleSearch = () => {
-    setUsers(
+    setFilteredUsers(
       users.filter((user) => {
         return user.firstName.toLowerCase().includes(search.toLowerCase()) || user.lastName.toLowerCase().includes(search.toLowerCase());
       })
@@ -43,6 +46,7 @@ function CommunityDisplay() {
   const handleRefresh = () => {
     setSearch('');
     fetchUsers();
+    resetFilters();
   };
 
   // hancle user click
@@ -149,6 +153,43 @@ function CommunityDisplay() {
       });
   };
 
+  // apply filters
+  const applyFilters = (newSearch = search, newStatus = selectedStatus) => {
+    let updatedUsers = [...users];
+
+    // filter by search
+    if (newSearch.trim()) {
+      updatedUsers = updatedUsers.filter(
+        (user) => user.firstName.toLowerCase().includes(newSearch.toLowerCase()) || user.lastName.toLowerCase().includes(newSearch.toLowerCase())
+      );
+    }
+
+    // filter by status
+    if (newStatus) {
+      switch (newStatus) {
+        case 'followers':
+          updatedUsers = updatedUsers.filter((user) => user.Followers.some((follower) => follower.id === currentUser.id));
+          break;
+        case 'following':
+          updatedUsers = updatedUsers.filter((user) => user.Following.some((following) => following.id === currentUser.id));
+          break;
+        case 'all':
+        default:
+          // no additional filtering needed
+          break;
+      }
+    }
+
+    setFilteredUsers(updatedUsers);
+  };
+
+  // reset filters
+  const resetFilters = () => {
+    setSearch('');
+    setSelectedStatus('all');
+    applyFilters('', 'all');
+  };
+
   // fetch users
   const fetchUsers = () => {
     const accessToken = sessionStorage.getItem('accessToken');
@@ -172,6 +213,7 @@ function CommunityDisplay() {
           const allUsers = users.filter((user) => user.id !== currentUser.id);
 
           setUsers(allUsers);
+          setFilteredUsers(allUsers);
         }
       })
       .catch((error) => {
@@ -207,42 +249,71 @@ function CommunityDisplay() {
       {/* search area */}
       <div className="sticky top-0 bg-white flex flex-1 flex-col pt-4 pl-4 pr-4">
         <div className="w-full max-w-full min-h-12 flex items-center gap-2">
-          {/* search bar */}
-          <input
-            type="text"
-            placeholder="Search users....."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-            onKeyDown={handleKeyPress}
-            className="flex-1 bg-[#f2f4f7] text-black rounded-xl px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#94B4C1]"
-          />
+          {/* filters */}
+          <div className="flex flex-wrap gap-2">
+            {/* filter by following status */}
+            <select
+              value={selectedStatus}
+              onChange={(e) => {
+                const selectedStatus = e.target.value;
+                setSelectedStatus(selectedStatus);
+                applyFilters(search, selectedStatus);
+              }}
+              className="bg-white border px-3 py-2 rounded-xl text-black w-40"
+            >
+              <option value="all">All Users</option>
+              <option value="followers">Followers</option>
+              <option value="following">Following</option>
+            </select>
+          </div>
 
-          {/* search button */}
-          <button
-            className="bg-[#578FCA] hover:bg-[#3674B5] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
-            onClick={handleSearch}
-          >
-            <Search />
-          </button>
+          {/* action buttons */}
+          <div className="flex items-center gap-2 flex-1">
+            {/* search bar */}
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              onKeyDown={handleKeyPress}
+              className="flex-1 bg-[#f2f4f7] text-black rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#94B4C1]"
+            />
 
-          {/* refresh button */}
-          <button
-            className="bg-[#48A6A7] hover:bg-[#357D7D] cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200"
-            onClick={handleRefresh}
-          >
-            <RefreshCcw />
-          </button>
+            {/* search button */}
+            <button
+              className="bg-[#578FCA] hover:bg-[#3674B5] cursor-pointer text-white px-4 py-3 rounded-xl transition-colors duration-200"
+              onClick={handleSearch}
+            >
+              <Search />
+            </button>
+
+            {/* refresh button */}
+            <button
+              className="bg-[#48A6A7] hover:bg-[#357D7D] cursor-pointer text-white px-4 py-3 rounded-xl transition-colors duration-200"
+              onClick={handleRefresh}
+            >
+              <RefreshCcw />
+            </button>
+
+            {/* reset button */}
+            <button
+              className="bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white px-4 py-3 rounded-xl transition-colors duration-200"
+              onClick={resetFilters}
+            >
+              Clear Filters
+            </button>
+          </div>
         </div>
       </div>
 
       {/* user display area */}
-      {users.length !== 0 ? (
+      {filteredUsers.length !== 0 ? (
         // user blocks
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-            {users.map((user, i) => (
+            {filteredUsers.map((user, i) => (
               <div
                 key={user.id || i}
                 onClick={() => {
@@ -349,7 +420,7 @@ function CommunityDisplay() {
         // no user text
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full max-w-full min-h-12 bg-muted flex items-center justify-center text-black rounded-xl italic text-lg">
-            Looks like it's a bit quiet here.....
+            Looks like it's a bit quiet here...
           </div>
         </div>
       )}

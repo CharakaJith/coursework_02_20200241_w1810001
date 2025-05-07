@@ -19,7 +19,10 @@ const userDao = {
         where: {
           isActive: true,
         },
-        order: [['lastName', 'ASC']],
+        order: [
+          ['firstName', 'ASC'],
+          ['lastName', 'ASC'],
+        ],
         include: [
           {
             model: models.Post,

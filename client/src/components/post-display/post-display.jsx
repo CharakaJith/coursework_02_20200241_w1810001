@@ -522,7 +522,7 @@ function PostDisplay() {
               className="bg-[#BE3D2A] hover:bg-[#952E1E] cursor-pointer text-white px-4 py-3 rounded-xl transition-colors duration-200"
               onClick={resetFilters}
             >
-              Reset Filters
+              Clear Filters
             </button>
           </div>
         </div>
@@ -635,7 +635,7 @@ function PostDisplay() {
                         value={comments[post.id] || ''}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => handleCommentOnChange(post.id, e)}
-                        placeholder="Share your thoughts....."
+                        placeholder="Share your thoughts..."
                         className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#94B4C1] text-black"
                       />
 
@@ -670,7 +670,7 @@ function PostDisplay() {
         // no post indicate text
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full max-w-full min-h-12 bg-muted flex items-center justify-center text-black rounded-xl italic text-lg">
-            Looks like it's a bit quiet here.....
+            Looks like it's a bit quiet here...
           </div>
         </div>
       )}

@@ -374,7 +374,7 @@ function MyPosts() {
             {/* search bar */}
             <input
               type="text"
-              placeholder="Search blog posts....."
+              placeholder="Search blog posts..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -503,7 +503,7 @@ function MyPosts() {
         // no post indicate text
         <div className="flex flex-1 flex-col p-4">
           <div className="w-full max-w-full min-h-12 bg-muted flex items-center justify-center text-black rounded-xl italic text-lg">
-            Looks like it's a bit quiet here.....
+            Looks like it's a bit quiet here...
           </div>
         </div>
       )}
