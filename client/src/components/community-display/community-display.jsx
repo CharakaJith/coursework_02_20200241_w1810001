@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, RefreshCcw, ThumbsUp, ThumbsDown, UserPlus, Users, MessageSquare, Plus } from 'lucide-react';
 import InfoPopup from '@/modals/info-popup';
 import { USER } from '@/common/messages';
+import { FILTER } from '@/constants/filter.constants';
 
 import Profile from '@/assets/images/profile.png';
 
@@ -19,7 +20,7 @@ function CommunityDisplay() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [search, setSearch] = useState('');
 
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState(FILTER.USER.ALL);
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
@@ -167,13 +168,13 @@ function CommunityDisplay() {
     // filter by status
     if (newStatus) {
       switch (newStatus) {
-        case 'followers':
+        case FILTER.USER.FOLLOWERS:
           updatedUsers = updatedUsers.filter((user) => user.Followers.some((follower) => follower.id === currentUser.id));
           break;
-        case 'following':
+        case FILTER.USER.FOLLOWING:
           updatedUsers = updatedUsers.filter((user) => user.Following.some((following) => following.id === currentUser.id));
           break;
-        case 'all':
+        case FILTER.USER.ALL:
         default:
           // no additional filtering needed
           break;
@@ -186,8 +187,8 @@ function CommunityDisplay() {
   // reset filters
   const resetFilters = () => {
     setSearch('');
-    setSelectedStatus('all');
-    applyFilters('', 'all');
+    setSelectedStatus(FILTER.USER.ALL);
+    applyFilters('', FILTER.USER.ALL);
   };
 
   // fetch users
@@ -261,9 +262,9 @@ function CommunityDisplay() {
               }}
               className="bg-white border px-3 py-2 rounded-xl text-black w-40"
             >
-              <option value="all">All Users</option>
-              <option value="followers">Followers</option>
-              <option value="following">Following</option>
+              <option value={FILTER.USER.ALL}>All Users</option>
+              <option value={FILTER.USER.FOLLOWERS}>Followers</option>
+              <option value={FILTER.USER.FOLLOWING}>Following</option>
             </select>
           </div>
 

@@ -7,6 +7,7 @@ import InfoPopup from '@/modals/info-popup';
 import PostPopup from '@/modals/post-popup';
 import { USER, MODAL, POSTS } from '@/common/messages';
 import { POST } from '@/constants/post.constant';
+import { FILTER } from '@/constants/filter.constants';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -161,11 +162,11 @@ function MyPosts() {
         if (isNaN(postDate)) return false;
 
         switch (newDateRange) {
-          case '24h':
+          case FILTER.POST.DATE.LAST_24_HOURS:
             return now - postDate <= 24 * 60 * 60 * 1000;
-          case '7d':
+          case FILTER.POST.DATE.LAST_7_DAYS:
             return now - postDate <= 7 * 24 * 60 * 60 * 1000;
-          case '30d':
+          case FILTER.POST.DATE.LAST_30_DAYS:
             return now - postDate <= 30 * 24 * 60 * 60 * 1000;
           default:
             return true;
@@ -173,11 +174,11 @@ function MyPosts() {
       });
 
       // by oldest and newest
-      if (newDateRange === 'oldest' || newDateRange === 'newest') {
+      if (newDateRange === FILTER.POST.DATE.OLDEST || newDateRange === FILTER.POST.DATE.NEWEST) {
         updatedPosts.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
-          return newDateRange === 'oldest' ? dateA - dateB : dateB - dateA;
+          return newDateRange === FILTER.POST.DATE.OLDEST ? dateA - dateB : dateB - dateA;
         });
       }
     }
@@ -185,24 +186,24 @@ function MyPosts() {
     // by likes and comments
     if (newSortBy) {
       switch (newSortBy) {
-        case 'most':
+        case FILTER.POST.LIKE.MOST:
           updatedPosts.sort((a, b) => {
             const likesA = a.Likes?.filter((like) => like.isLike === true).length || 0;
             const likesB = b.Likes?.filter((like) => like.isLike === true).length || 0;
             return likesB - likesA;
           });
           break;
-        case 'least':
+        case FILTER.POST.LIKE.LEAST:
           updatedPosts.sort((a, b) => {
             const likesA = a.Likes?.filter((like) => like.isLike === true).length || 0;
             const likesB = b.Likes?.filter((like) => like.isLike === true).length || 0;
             return likesA - likesB;
           });
           break;
-        case 'most-popular':
+        case FILTER.POST.LIKE.POPULAR:
           updatedPosts.sort((a, b) => b.Comments?.length - a.Comments?.length);
           break;
-        case 'least-popular':
+        case FILTER.POST.LIKE.UNPOPULAR:
           updatedPosts.sort((a, b) => a.Comments?.length - b.Comments?.length);
           break;
         default:
@@ -344,11 +345,11 @@ function MyPosts() {
               className="bg-white border px-3 py-2 rounded-xl text-black w-40"
             >
               <option value="">Any Date</option>
-              <option value="24h">Last 24 Hours</option>
-              <option value="7d">Last 7 Days</option>
-              <option value="30d">Last 30 Days</option>
-              <option value="oldest">Oldest First</option>
-              <option value="newest">Newest First</option>
+              <option value={FILTER.POST.DATE.LAST_24_HOURS}>Last 24 Hours</option>
+              <option value={FILTER.POST.DATE.LAST_7_DAYS}>Last 7 Days</option>
+              <option value={FILTER.POST.DATE.LAST_30_DAYS}>Last 30 Days</option>
+              <option value={FILTER.POST.DATE.NEWEST}>Newest First</option>
+              <option value={FILTER.POST.DATE.OLDEST}>Oldest First</option>
             </select>
 
             {/* filter by likes */}
@@ -362,10 +363,10 @@ function MyPosts() {
               className="bg-white border px-3 py-2 rounded-xl text-black w-40"
             >
               <option value="">Sort By</option>
-              <option value="most">Most Liked</option>
-              <option value="least">Least Liked</option>
-              <option value="most-popular">Most Popular</option>
-              <option value="least-popular">Least Popular</option>
+              <option value={FILTER.POST.LIKE.MOST}>Most Liked</option>
+              <option value={FILTER.POST.LIKE.LEAST}>Least Liked</option>
+              <option value={FILTER.POST.LIKE.POPULAR}>Most Popular</option>
+              <option value={FILTER.POST.LIKE.UNPOPULAR}>Least Popular</option>
             </select>
           </div>
 
