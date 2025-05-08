@@ -27,6 +27,10 @@
     {
       "name": "Post",
       "description": "Endpoints related to the blog-post"
+    },
+    {
+      "name": "Country",
+      "description": "Endpoints related to countries"
     }
   ],
   "schemes": ["http"],
@@ -545,6 +549,63 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": ["Post"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Update a blog post.",
+        "parameters": [
+          {
+            "name": "post/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/PostUpdate"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Post updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/PostUpdateSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Required details are not provided.",
+            "schema": {
+              "$ref": "#/definitions/PostUpdateBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "403": {
+            "description": "Post does not belong to the user.",
+            "schema": {
+              "$ref": "#/definitions/PostUpdateForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "Post not found or country not found.",
+            "schema": {
+              "$ref": "#/definitions/PostUpdateNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
       }
     },
     "/post/all": {
@@ -656,6 +717,87 @@
             "description": "Post not found.",
             "schema": {
               "$ref": "#/definitions/PostGetByIdNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Post"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Delete a blog post.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Blog post deleted successfully.",
+            "schema": {
+              "$ref": "#/definitions/PostDeleteSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid post ID.",
+            "schema": {
+              "$ref": "#/definitions/PostDeleteBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "403": {
+            "description": "Post does not belong to the user.",
+            "schema": {
+              "$ref": "#/definitions/PostDeleteForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "Post not found.",
+            "schema": {
+              "$ref": "#/definitions/PostDeleteNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/country": {
+      "get": {
+        "tags": ["Country"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Get all country details.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Fetched all countries successfully.",
+            "schema": {
+              "$ref": "#/definitions/CountryGetAllSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
             }
           },
           "500": {
@@ -2728,6 +2870,399 @@
                 "message": {
                   "type": "string",
                   "example": "Post not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "PostUpdate": {
+      "type": "object",
+      "required": ["id", "title", "content", "countryId", "visitDate"],
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1,
+          "description": "ID of the post."
+        },
+        "title": {
+          "type": "string",
+          "example": "Week in day at Sri Lanka",
+          "description": "Post title."
+        },
+        "content": {
+          "type": "string",
+          "example": "Touching down in France felt like stepping into a dream. From the aroma of fresh croissants in the morning air to the charm of cobblestone streets and cozy cafés, everything was surreal. Navigating a new language and culture was both exciting and humbling — but every smile, every “bonjour,” made the journey feel warm and welcoming.",
+          "description": "Post content."
+        },
+        "countryId": {
+          "type": "number",
+          "example": 2,
+          "description": "ID of the country."
+        },
+        "visitDate": {
+          "type": "string",
+          "example": "01/01/2000",
+          "description": "Visited."
+        }
+      }
+    },
+    "PostUpdateSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "201"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "post": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "userId": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "Week in day at Sri Lanka"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "Touching down in France felt like stepping into a dream. From the aroma of fresh croissants in the morning air to the charm of cobblestone streets and cozy cafés, everything was surreal. Navigating a new language and culture was both exciting and humbling — but every smile, every “bonjour,” made the journey feel warm and welcoming."
+                    },
+                    "visitDate": {
+                      "type": "string",
+                      "example": "1999-12-31T18:00:00.000Z"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-05-04T18:29:00.729Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2025-05-04T18:29:00.729Z"
+                    },
+                    "Country": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number",
+                          "example": 2
+                        },
+                        "officialName": {
+                          "type": "string",
+                          "example": "Democratic Socialist Republic of Sri Lanka"
+                        },
+                        "commonName": {
+                          "type": "string",
+                          "example": "Sri Lanka"
+                        },
+                        "capital": {
+                          "type": "string",
+                          "example": "Sri Jayawardenepura Kotte"
+                        },
+                        "languages": {
+                          "type": "string",
+                          "example": "{\"sin\":\"Sinhala\",\"tam\":\"Tamil\"}"
+                        },
+                        "flagUrl": {
+                          "type": "string",
+                          "example": "https://flagcdn.com/lk.svg"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2025-05-04T18:24:33.293Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2025-05-04T18:24:33.293Z"
+                        },
+                        "Currency": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number",
+                              "example": 2
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Sri Lankan Rupees"
+                            },
+                            "code": {
+                              "type": "string",
+                              "example": "LKR"
+                            },
+                            "symbol": {
+                              "type": "string",
+                              "example": "රූ"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "example": "2025-05-04T18:24:33.289Z"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "example": "2025-05-04T18:24:33.289Z"
+                            }
+                          }
+                        },
+                        "Likes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number",
+                                "example": 2
+                              },
+                              "userId": {
+                                "type": "number",
+                                "example": 2
+                              },
+                              "isLike": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2025-05-04T18:30:22.315Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2025-05-04T18:30:22.315Z"
+                              }
+                            }
+                          }
+                        },
+                        "Comments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number",
+                                "example": 2
+                              },
+                              "userId": {
+                                "type": "number",
+                                "example": 2
+                              },
+                              "content": {
+                                "type": "string",
+                                "example": "Nice post! Loved it."
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "example": "2025-05-04T18:30:22.315Z"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "example": "2025-05-04T18:30:22.315Z"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostUpdateBadResponse": {
+      "type": "object",
+      "properties": {}
+    },
+    "PostUpdateForbiddonResponse": {},
+    "PostUpdateNotFoundResponse": {},
+
+    "PostDeleteSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Post has been permanently deleted."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostDeleteBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid format for post ID."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostDeleteForbiddonResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Access denied."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PostDeleteNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Post not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "CountryGetAllSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "countries": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "officialName": {
+                        "type": "string",
+                        "example": "Democratic Socialist Republic of Sri Lanka"
+                      },
+                      "commonName": {
+                        "type": "string",
+                        "example": "Sri Lanka"
+                      },
+                      "capital": {
+                        "type": "string",
+                        "example": "Sri Jayawardenepura Kotte"
+                      },
+                      "currencyId": {
+                        "type": "number",
+                        "example": 2
+                      },
+                      "languages": {
+                        "type": "string",
+                        "example": "{\"sin\":\"Sinhala\",\"tam\":\"Tamil\"}"
+                      },
+                      "flagUrl": {
+                        "type": "string",
+                        "example": "https://flagcdn.com/lk.svg"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2025-05-04T18:24:35.310Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2025-05-04T18:24:35.310Z"
+                      }
+                    }
+                  }
                 }
               }
             }
