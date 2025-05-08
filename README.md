@@ -115,7 +115,7 @@ The following assumptions were made during the development of this project:
   - It also supports relationships between tables (one-to-many, many-to-many), making it suitable for complex data models.
 - A `user` table is used to store user credentials and related information.
 - The `follow` table is used to track the following relationships between users.
-- The `post` table is used to store blog posts published by users, while the `comment` and `react` tables track the comments, likes, and dislikes associated with each post.
+- The `post` table is used to store blog posts published by users, while the `comment` and `like` tables track the comments, likes, and dislikes associated with each post.
 - `country` and `currency` tables are used to store and manage session-related data where applicable.
 - The database schema remains consistent across environments unless explicitly modified.
 
@@ -167,6 +167,12 @@ The following assumptions were made during the development of this project:
   - **Service**: Contains the core business logic and operations.
   - **DAO (Data Access Object)**: Provides an abstraction layer for interacting with the database.
   - **Database**: The SQLite database is used for storing and managing data.
+
+## Documentations
+
+- [Postman API documentation](https://documenter.getpostman.com/view/28014836/2sB2j7fAYT)
+- [System architecture diagram](https://lucid.app/lucidchart/436dfa9f-b542-4e8a-a1df-76894b573fb9/edit?viewport_loc=-1365%2C-95%2C5443%2C2530%2C0_0&invitationId=inv_e845e655-c405-4c44-b7f9-8e1d705223a0)
+- [Entity relation diagram](https://lucid.app/lucidchart/447f022c-b8cb-487f-86e1-62cb4a9d4d71/edit?viewport_loc=-816%2C-155%2C2992%2C1391%2C0_0&invitationId=inv_512ecbd0-5b5e-4787-946d-fb8d5b860876)
 
 ## Contact
 

@@ -34,6 +34,37 @@
   "produces": ["application/json"],
   "paths": {
     "/user/": {
+      "get": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Get all users with posts, followers and following.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Fetched all users successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserGetAllSuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      },
+
       "post": {
         "tags": ["User"],
         "description": "Registers a new user by creating an account with the provided credentials.",
@@ -174,6 +205,50 @@
         }
       }
     },
+    "/user/1": {
+      "get": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Get a user by ID with posts, followers and following.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Fetched user by ID successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserGetByIdSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid type for user ID.",
+            "schema": {
+              "$ref": "#/definitions/UserGetByIdBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "404": {
+            "description": "No user found for the given ID.",
+            "schema": {
+              "$ref": "#/definitions/UserGetByIdNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/user/login": {
       "post": {
         "tags": ["User"],
@@ -289,6 +364,124 @@
             "description": "User record is not available in the database.",
             "schema": {
               "$ref": "#/definitions/UserPasswordNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/follow": {
+      "post": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Follow a user.",
+        "parameters": [
+          {
+            "name": "user/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserFollow"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User followed successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserFollowSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "User failed to provide required details.",
+            "schema": {
+              "$ref": "#/definitions/UserFollowBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "403": {
+            "description": "User ID is equal to follower ID or already following this user.",
+            "schema": {
+              "$ref": "#/definitions/UserFollowForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "Follower not found.",
+            "schema": {
+              "$ref": "#/definitions/UserFollowNotFoundResponse"
+            }
+          },
+          "500": {
+            "description": "Unexpected server error occurred in the system.",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/unfollow": {
+      "post": {
+        "tags": ["User"],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "description": "Unfollow a user by follow ID.",
+        "parameters": [
+          {
+            "name": "user/",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserUnfollow"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User unfollowed successfully.",
+            "schema": {
+              "$ref": "#/definitions/UserUnfollowSuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Failed to provide required details.",
+            "schema": {
+              "$ref": "#/definitions/UserUnfollowBadResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication token failed.",
+            "schema": {
+              "$ref": "#/definitions/AuthFailedResponse"
+            }
+          },
+          "403": {
+            "description": "Following record does not belong to the user.",
+            "schema": {
+              "$ref": "#/definitions/UserUnfollowForbiddonResponse"
+            }
+          },
+          "404": {
+            "description": "Follow record not found for ID.",
+            "schema": {
+              "$ref": "#/definitions/UserUnfollowNotFoundResponse"
             }
           },
           "500": {
@@ -476,6 +669,509 @@
     }
   },
   "definitions": {
+    "UserGetAllSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "users": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number",
+                        "example": 1
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "example": "John"
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "example": "Doe"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "+94701234567"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "john@example.com"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "example": "2025-05-04T18:30:05.944Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "example": "2025-05-04T18:30:05.944Z"
+                      },
+                      "Posts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number",
+                              "example": 1
+                            },
+                            "userId": {
+                              "type": "number",
+                              "example": 1
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "Finding Authentic Italy in the Quiet Corners of Umbria"
+                            },
+                            "content": {
+                              "type": "string",
+                              "example": "Everyone dreams of Italy—the Colosseum in Rome, gondolas in Venice, Tuscan vineyards at golden hour. But tucked between Tuscany and Lazio is Umbria, a region often overlooked but rich with authenticity, charm, and quiet beauty. It’s Italy without the crowds. It’s Italy that whispers instead of shouts. Perugia, the regional capital, is a medieval city perched high on a hill. Walking its streets is like stepping into a Renaissance painting—archways, steep staircases, and locals gathering in quiet piazzas. Unlike tourist-swarmed Rome, here you’ll hear more Italian than English. The pace is slower. The coffee stronger. The conversations longer. A short drive away is Assisi, the birthplace of Saint Francis. Its pink-stone basilica, built into a slope, contains frescoes that glow softly in the candlelight. But it’s the silence of the town that moves you more than its monuments. Pilgrims walk the cobbled lanes with purpose, while others just stop to breathe in the hills. Then there’s Spello, one of Umbria’s most beautiful villages, especially in spring when flower boxes spill color over its ancient stone walls. Each doorway is framed with blooms. It’s like walking through a living garden. You won’t find massive attractions here, just small bakeries, family-run osterias, and the quiet joy of discovery. Food in Umbria is honest and earthy. Truffles are king. Try strangozzi al tartufo, pasta tossed with black truffle shavings and olive oil. Pair it with a glass of Sagrantino wine, and you’ll understand why Umbrians rarely leave home. Meals here are events—long, lively, and layered with pride. In Umbria, you don’t chase the highlights. You settle into the rhythm—morning espresso under a fig tree, lunch in a sunlit piazza, golden light over olive groves at dusk. It’s a region that gives without needing to impress. Italy has many faces. Umbria is its quiet smile."
+                            },
+                            "countryId": {
+                              "type": "number",
+                              "example": 1
+                            },
+                            "visitDate": {
+                              "type": "string",
+                              "example": "2025-05-01T00:00:00.000Z"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "example": "2025-05-04T18:31:57.559Z"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "example": "2025-05-04T18:31:57.559Z"
+                            },
+                            "Likes": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "number",
+                                    "example": 1
+                                  },
+                                  "userId": {
+                                    "type": "number",
+                                    "example": 2
+                                  },
+                                  "postId": {
+                                    "type": "number",
+                                    "example": 1
+                                  },
+                                  "isLike": {
+                                    "type": "boolean",
+                                    "example": true
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "example": "2025-05-04T18:31:57.559Z"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "example": "2025-05-04T18:31:57.559Z"
+                                  }
+                                }
+                              }
+                            },
+                            "Comments": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "number",
+                                    "example": 1
+                                  },
+                                  "userId": {
+                                    "type": "number",
+                                    "example": 2
+                                  },
+                                  "postId": {
+                                    "type": "number",
+                                    "example": 1
+                                  },
+                                  "content": {
+                                    "type": "string",
+                                    "example": "Nice post! Loved it."
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "example": "2025-05-04T18:31:57.559Z"
+                                  },
+                                  "updatedAt": {
+                                    "type": "string",
+                                    "example": "2025-05-04T18:31:57.559Z"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Followers": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number",
+                              "example": 2
+                            },
+                            "firstName": {
+                              "type": "string",
+                              "example": "Jane"
+                            },
+                            "lastName": {
+                              "type": "string",
+                              "example": "Doe"
+                            },
+                            "Follow": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number",
+                                  "example": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Following": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number",
+                              "example": 2
+                            },
+                            "firstName": {
+                              "type": "string",
+                              "example": "Jane"
+                            },
+                            "lastName": {
+                              "type": "string",
+                              "example": "Doe"
+                            },
+                            "Follow": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number",
+                                  "example": 2
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserGetByIdSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+94701234567"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "john@example.com"
+                    },
+                    "isActive": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-05-04T18:30:05.944Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2025-05-04T18:30:05.944Z"
+                    },
+                    "Posts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "userId": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Finding Authentic Italy in the Quiet Corners of Umbria"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "Everyone dreams of Italy—the Colosseum in Rome, gondolas in Venice, Tuscan vineyards at golden hour. But tucked between Tuscany and Lazio is Umbria, a region often overlooked but rich with authenticity, charm, and quiet beauty. It’s Italy without the crowds. It’s Italy that whispers instead of shouts. Perugia, the regional capital, is a medieval city perched high on a hill. Walking its streets is like stepping into a Renaissance painting—archways, steep staircases, and locals gathering in quiet piazzas. Unlike tourist-swarmed Rome, here you’ll hear more Italian than English. The pace is slower. The coffee stronger. The conversations longer. A short drive away is Assisi, the birthplace of Saint Francis. Its pink-stone basilica, built into a slope, contains frescoes that glow softly in the candlelight. But it’s the silence of the town that moves you more than its monuments. Pilgrims walk the cobbled lanes with purpose, while others just stop to breathe in the hills. Then there’s Spello, one of Umbria’s most beautiful villages, especially in spring when flower boxes spill color over its ancient stone walls. Each doorway is framed with blooms. It’s like walking through a living garden. You won’t find massive attractions here, just small bakeries, family-run osterias, and the quiet joy of discovery. Food in Umbria is honest and earthy. Truffles are king. Try strangozzi al tartufo, pasta tossed with black truffle shavings and olive oil. Pair it with a glass of Sagrantino wine, and you’ll understand why Umbrians rarely leave home. Meals here are events—long, lively, and layered with pride. In Umbria, you don’t chase the highlights. You settle into the rhythm—morning espresso under a fig tree, lunch in a sunlit piazza, golden light over olive groves at dusk. It’s a region that gives without needing to impress. Italy has many faces. Umbria is its quiet smile."
+                          },
+                          "countryId": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "visitDate": {
+                            "type": "string",
+                            "example": "2025-05-01T00:00:00.000Z"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2025-05-04T18:31:57.559Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2025-05-04T18:31:57.559Z"
+                          },
+                          "Likes": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number",
+                                  "example": 1
+                                },
+                                "userId": {
+                                  "type": "number",
+                                  "example": 2
+                                },
+                                "postId": {
+                                  "type": "number",
+                                  "example": 1
+                                },
+                                "isLike": {
+                                  "type": "boolean",
+                                  "example": true
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "example": "2025-05-04T18:31:57.559Z"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "example": "2025-05-04T18:31:57.559Z"
+                                }
+                              }
+                            }
+                          },
+                          "Comments": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number",
+                                  "example": 1
+                                },
+                                "userId": {
+                                  "type": "number",
+                                  "example": 2
+                                },
+                                "postId": {
+                                  "type": "number",
+                                  "example": 1
+                                },
+                                "content": {
+                                  "type": "string",
+                                  "example": "Nice post! Loved it."
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "example": "2025-05-04T18:31:57.559Z"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "example": "2025-05-04T18:31:57.559Z"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Followers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number",
+                            "example": 2
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "example": "Jane"
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "example": "Doe"
+                          },
+                          "Follow": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number",
+                                "example": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Following": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number",
+                            "example": 2
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "example": "Jane"
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "example": "Doe"
+                          },
+                          "Follow": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number",
+                                "example": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserGetByIdBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid format for user ID."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserGetByIdNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "UserSignUp": {
       "type": "object",
       "required": ["firstName", "lastName", "phone", "email", "password"],
@@ -1253,6 +1949,281 @@
                 "message": {
                   "type": "string",
                   "example": "User account is inactive."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserFollow": {
+      "type": "object",
+      "required": ["followerId"],
+      "properties": {
+        "followerId": {
+          "type": "number",
+          "example": 2,
+          "description": "User ID of the follower."
+        }
+      }
+    },
+    "UserFollowSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "follow": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "followerId": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "followingId": {
+                      "type": "number",
+                      "example": 2
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2025-05-04T18:30:05.944Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2025-05-04T18:30:05.944Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserFollowBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string",
+                    "example": "followerId"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Field 'followerId' is empty!"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserFollowForbiddonResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Already following this user."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserFollowNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "404"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "UserUnfollow": {
+      "type": "object",
+      "required": ["followId"],
+      "properties": {
+        "followId": {
+          "type": "number",
+          "example": 2,
+          "description": "ID of the follow."
+        }
+      }
+    },
+    "UserUnfollowSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "true"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "200"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unfollowed this user successfully."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserUnfollowBadResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "400"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "string",
+                    "example": "followId"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Field 'followId' is empty!"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserUnfollowForbiddonResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Action not permitted."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserUnfollowNotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": "false"
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "number",
+              "example": "403"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid follow id."
                 }
               }
             }
